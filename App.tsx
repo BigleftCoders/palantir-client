@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 
 // components
 import AppRoot from './src/root';
@@ -10,7 +10,13 @@ import rootReducer from './src/reducers/rootReducer';
 import { middleware } from './src/utils/redux_utils';
 
 // store create
-const store = createStore(rootReducer, applyMiddleware(middleware));
+const store = createStore(
+  rootReducer,
+  compose(
+    applyMiddleware(middleware),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )
+);
 
 class App extends React.Component<{}> {
   render() {
