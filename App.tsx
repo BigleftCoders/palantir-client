@@ -1,22 +1,31 @@
 import * as React from 'react';
-import styled from './src/interfaces/styled-components';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 
 // components
-import Root from './src/root';
+import AppRoot from './src/root';
 
-const StyledView = styled.View`
-  flex: 1;
-  background-color: #fff;
-  align-items: center;
-  justify-content: center;
-`;
+// utils
+import rootReducer from './src/reducers/rootReducer';
+import { middleware } from './src/utils/redux_utils';
 
-export default class App extends React.Component<{}> {
+// store create
+const store = createStore(
+  rootReducer,
+  compose(
+    applyMiddleware(middleware),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )
+);
+
+class App extends React.Component<{}> {
   render() {
     return (
-      <StyledView>
-        <Root />
-      </StyledView>
+      <Provider store={store}>
+        <AppRoot />
+      </Provider>
     );
   }
 }
+
+export default App;
