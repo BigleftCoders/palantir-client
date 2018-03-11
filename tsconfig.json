@@ -12,9 +12,6 @@
     "noEmitHelpers": true,
     "importHelpers": true,
     "strict": true,
-    "noImplicitReturns": true,
-    "paths": {
-      "src": ["./src"]
-    }
+    "noImplicitReturns": true
   }
 }

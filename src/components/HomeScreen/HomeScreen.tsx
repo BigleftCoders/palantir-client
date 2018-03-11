@@ -1,5 +1,4 @@
 import React from 'react';
-// import { View, Text } from "react-native";
 import { StackNavigator } from 'react-navigation';
 import styled from '../../interfaces/styled-components';
 
@@ -11,22 +10,22 @@ const StyledView = styled.View`
 `;
 
 const StyledText = styled.Text`
-  color: blue;
+  color: gray;
   text-align: center;
 `;
 
-class LoginScreen extends React.Component {
+class HomeScreen extends React.Component {
   render() {
     return (
       <StyledView>
-        <StyledText>Login Screen</StyledText>
+        <StyledText>Home Screen</StyledText>
       </StyledView>
     );
   }
 }
 
 export default StackNavigator({
-  Login: {
-    screen: LoginScreen
+  Home: {
+    screen: HomeScreen
   }
 });

@@ -1,28 +1,44 @@
-import * as React from "react";
-import styled from "styled-components";
-import { View } from "react-native";
-import { Button } from "antd-mobile";
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { addNavigationHelpers, StackNavigator } from 'react-navigation';
 
-const StyledLogo = styled.Text`
-  color: blue;
-  text-align: center;
-`;
+// components
+import LoginScreen from './components/LoginScreen/LoginScreen';
+import HomeScreen from './components/HomeScreen/HomeScreen';
 
-const StyledTitle = styled.Text`
-  color: gray;
-  padding-bottom: 10px;
-  text-align: center;
-`;
+// utils
+import { addListener } from './utils/redux_utils';
 
-export default class Root extends React.Component<{}> {
+class AppRoot extends React.Component<{ dispatch: any; nav: object }> {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    nav: PropTypes.object.isRequired
+  };
+
   render() {
-    console.log("krkd");
+    const { dispatch, nav } = this.props;
+    console.log('rendered app');
+
     return (
-      <View>
-        <StyledLogo>Palantir</StyledLogo>
-        <StyledTitle>kek component</StyledTitle>
-        <Button type="primary">awesome button</Button>
-      </View>
+      <AppNavigator
+        navigation={addNavigationHelpers({
+          dispatch,
+          state: nav,
+          addListener
+        })}
+      />
     );
   }
 }
+
+const mapStateToProps = (state: object) => ({
+  nav: state.nav
+});
+
+export const AppNavigator = StackNavigator({
+  Login: { screen: LoginScreen },
+  Home: { screen: HomeScreen }
+});
+
+export default connect(mapStateToProps)(AppRoot);
