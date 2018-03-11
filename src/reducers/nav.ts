@@ -1,6 +1,9 @@
 import { NavigationActions } from 'react-navigation';
 import { AppNavigator } from '../root';
 
+// constants
+import { LOGIN, LOGOUT } from '../constants/Auth';
+
 // actions
 const firstAction = AppNavigator.router.getActionForPathAndParams('Home');
 const tempNavState = AppNavigator.router.getStateForAction(firstAction);
@@ -12,21 +15,16 @@ function nav(state = initialNavState, action: any) {
   let nextState;
 
   switch (action.type) {
-    case 'Login':
-      nextState = AppNavigator.router.getStateForAction(NavigationActions.back(), state);
-      break;
-    case 'Logout':
-      nextState = AppNavigator.router.getStateForAction(
+    case LOGIN:
+      return AppNavigator.router.getStateForAction(NavigationActions.back(), state);
+    case LOGOUT:
+      return AppNavigator.router.getStateForAction(
         NavigationActions.navigate({ routeName: 'Login' }),
         state
       );
-      break;
     default:
-      nextState = AppNavigator.router.getStateForAction(action, state);
-      break;
+      return AppNavigator.router.getStateForAction(action, state) || state;
   }
-
-  return nextState || state;
 }
 
 export default nav;

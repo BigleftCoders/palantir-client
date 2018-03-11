@@ -1,10 +1,12 @@
+import { LOGIN, LOGOUT } from '../constants/Auth';
+
 const initialAuthState = { isLoggedIn: false };
 
-function auth(state = initialAuthState, action: any) {
+function auth(state = initialAuthState, action: object) {
   switch (action.type) {
-    case 'Login':
+    case LOGIN:
       return { ...state, isLoggedIn: true };
-    case 'Logout':
+    case LOGOUT:
       return { ...state, isLoggedIn: false };
     default:
       return state;
