@@ -28,6 +28,7 @@
 * Typescript
 * React
 * Redux
+* Styled components
 * Antd design
 
 На сервере (предварительно):
