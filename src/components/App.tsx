@@ -1,5 +1,6 @@
 import * as React from 'react';
-import './App.css';
+import 'static/styles/main.css';
+
 import AuthScreen from './AuthScreen';
 
 class App extends React.Component {
