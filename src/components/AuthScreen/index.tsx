@@ -2,7 +2,6 @@ import * as React from 'react';
 // import { AuthProps } from './types';
 import { Button } from 'antd';
 import styled from 'styled-components';
-
 // api
 import auth from 'api/auth';
 
@@ -17,13 +16,26 @@ class AuthScreen extends React.Component {
       throw error;
     }
   };
-
+  componentDidMount() {
+    const uri = new URLSearchParams(window.location.search);
+    console.log(uri);
+    // for (const query of uri) {
+    //   console.log(query);
+    // }
+    // axios.get('/auth/google/callback');
+  }
   render() {
     return (
       <STWrapper>
         <div>
           <STGreet>Hello kekus</STGreet>
-          <Button onClick={this.handleGoogleAuth} type="primary" icon="google-plus" size="large">
+          <Button
+            // onClick={this.handleGoogleAuth}
+            href="http://localhost:5000/auth/google"
+            type="primary"
+            icon="google-plus"
+            size="large"
+          >
             Sign in with Google
           </Button>
         </div>
