@@ -27,12 +27,15 @@ class AuthScreen extends React.Component<IProps> {
   async componentDidMount() {
     try {
       const parsedCodeObj = queryString.parseUrl(this.props.location.search);
-      const res = await axios.get('/auth/google/callback', {
-        params: {
-          code: parsedCodeObj.query.code
-        }
-      });
-      console.log(res);
+      const code = parsedCodeObj.query.code;
+      if (code) {
+        const res = await axios.get('/auth/google/callback', {
+          params: {
+            code
+          }
+        });
+        console.log(res);
+      }
     } catch (error) {
       throw error;
     }
