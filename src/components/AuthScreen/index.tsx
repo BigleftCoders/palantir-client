@@ -2,36 +2,48 @@ import * as React from 'react';
 // import { AuthProps } from './types';
 import { Button } from 'antd';
 import styled from 'styled-components';
+import { RouteComponentProps } from 'react-router';
 // api
-import auth from 'api/auth';
+// import auth from 'api/auth';
+import * as queryString from 'query-string';
+import axios from 'api/rest';
 
-class AuthScreen extends React.Component {
+interface IProps extends RouteComponentProps<any> {}
+
+class AuthScreen extends React.Component<IProps> {
   state = {};
 
   handleGoogleAuth = async () => {
     try {
-      const googleAuthRes = await auth.googleLogin();
-      console.log(googleAuthRes);
+      window.open(
+        'http://localhost:5000/auth/google',
+        '_blank',
+        'height=400,width=400,fullscreen=no'
+      );
     } catch (error) {
       throw error;
     }
   };
-  componentDidMount() {
-    const uri = new URLSearchParams(window.location.search);
-    console.log(uri);
-    // for (const query of uri) {
-    //   console.log(query);
-    // }
-    // axios.get('/auth/google/callback');
+  async componentDidMount() {
+    try {
+      const parsedCodeObj = queryString.parseUrl(this.props.location.search);
+      const res = await axios.get('/auth/google/callback', {
+        params: {
+          code: parsedCodeObj.query.code
+        }
+      });
+      console.log(res);
+    } catch (error) {
+      throw error;
+    }
   }
   render() {
     return (
       <STWrapper>
         <div>
-          <STGreet>Hello kekus</STGreet>
+          <STGreet>Hello</STGreet>
           <Button
-            // onClick={this.handleGoogleAuth}
-            href="http://localhost:5000/auth/google"
+            onClick={this.handleGoogleAuth}
             type="primary"
             icon="google-plus"
             size="large"
