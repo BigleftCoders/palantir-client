@@ -1,12 +1,16 @@
 import * as React from 'react';
+// tslint:disable-next-line
 import styled from 'styled-components';
 import { RouteComponentProps } from 'react-router';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Button } from 'antd';
 
 // api
-// import auth from 'api/auth';
 import * as queryString from 'query-string';
-import axios from 'api/rest';
+
+// actions
+import * as authActions from 'store/actions/authActions';
 
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
@@ -14,54 +18,46 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 // types
 // import { AuthProps } from './types';
 
-interface IProps extends RouteComponentProps<any> {}
+interface IAuthActions {
+  doGoogleAuthCallback: () => any;
+  openGoogleAuthWindow: () => any;
+}
+
+interface IProps extends RouteComponentProps<any> {
+  auth: any;
+  authActions: IAuthActions;
+}
 
 class AuthScreen extends React.Component<IProps> {
-  state = {
-    isAuthInProcess: false
+  handleGoogleAuth = () => {
+    this.props.authActions.openGoogleAuthWindow();
   };
 
-  handleGoogleAuth = async () => {
-    try {
-      window.open(
-        'http://localhost:5000/auth/google',
-        '_blank',
-        'height=400,width=400,fullscreen=no'
-      );
-    } catch (error) {
-      throw error;
-    }
-  };
+  componentDidMount() {
+    const parsedCodeObj = queryString.parseUrl(this.props.location.search);
+    const code = parsedCodeObj.query.code;
+    console.log(code);
 
-  async componentDidMount() {
-    try {
-      const parsedCodeObj = queryString.parseUrl(this.props.location.search);
-      const code = parsedCodeObj.query.code;
-      console.log(code);
-      if (code) {
-        this.setState({ isAuthInProcess: true });
-        const res = await axios.get('/auth/google/callback', {
-          params: {
-            code
-          }
-        });
-        console.log(res);
-        window.close();
-      }
-    } catch (error) {
-      throw error;
+    if (code) {
+      this.props.authActions.doGoogleAuthCallback();
     }
   }
 
   render() {
-    const { isAuthInProcess } = this.state;
+    const { isAuthInProcess, isWaitForAuthCallback } = this.props.auth;
 
     return (
       <STWrapper>
-        <LoadingSpinner isLoading={isAuthInProcess} spinnerSize="large">
+        <LoadingSpinner isLoading={isWaitForAuthCallback} spinnerSize="large">
           <div>
             <STGreet>Hello</STGreet>
-            <Button onClick={this.handleGoogleAuth} type="primary" icon="google-plus" size="large">
+            <Button
+              onClick={this.handleGoogleAuth}
+              loading={isAuthInProcess}
+              type="primary"
+              icon="google-plus"
+              size="large"
+            >
               Sign in with Google
             </Button>
           </div>
@@ -69,6 +65,18 @@ class AuthScreen extends React.Component<IProps> {
       </STWrapper>
     );
   }
+}
+
+function mapStateToProps(state: any) {
+  return {
+    auth: state.auth
+  };
+}
+
+function mapDispatchToProps(dispatch: any) {
+  return {
+    authActions: bindActionCreators(authActions, dispatch)
+  };
 }
 
 const STGreet = styled.p`
@@ -87,4 +95,4 @@ const STWrapper = styled.div`
   align-items: center;
 `;
 
-export default AuthScreen;
+export default connect<any, any, any>(mapStateToProps, mapDispatchToProps)(AuthScreen);
