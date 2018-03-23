@@ -1,5 +1,5 @@
 import * as React from 'react';
-import 'static/styles/main.css';
+import 'styles/main.css';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import AuthScreen from './AuthScreen';
