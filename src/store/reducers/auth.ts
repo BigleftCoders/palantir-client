@@ -1,26 +1,44 @@
+// import { Auth } from 'api/auth';
 import {
-  INIT_GOOGLE_AUTH,
-  GOOGLE_AUTH_CALLBACK,
-  FINISH_GOOGLE_AUTH,
-  GOOGLE_AUTH_ERROR
+  // INIT_GOOGLE_AUTH,
+  // GOOGLE_AUTH_CALLBACK,
+  // FINISH_GOOGLE_AUTH,
+  // GOOGLE_AUTH_ERROR
+  SET_USER_DATA
 } from '../constants/Auth';
+interface IUserData {
+  firstName: string;
+  lastName: string;
+}
+interface IAuthState {
+  userData: IUserData;
+}
 
-const initialState = {
-  isAuthInProcess: false,
-  isWaitForAuthCallback: false,
-  isError: false
+const initialState: IAuthState = {
+  userData: {
+    firstName: '',
+    lastName: ''
+  }
+  // isAuthInProcess: false,
+  // isWaitForAuthCallback: false,
+  // isError: false
 };
 
 export default function auth(state = initialState, action: any) {
   switch (action.type) {
-    case INIT_GOOGLE_AUTH:
-      return { ...state, isAuthInProcess: true };
-    case GOOGLE_AUTH_CALLBACK:
-      return { ...state, isWaitForAuthCallback: true };
-    case FINISH_GOOGLE_AUTH:
-      return { ...state, isAuthInProcess: false, isWaitForAuthCallback: false };
-    case GOOGLE_AUTH_ERROR:
-      return { ...state, isAuthInProcess: false, isWaitForAuthCallback: false, isError: true };
+    case SET_USER_DATA:
+      return {
+        state,
+        userData: action.payload
+      };
+    // case INIT_GOOGLE_AUTH:
+    //   return { ...state, isAuthInProcess: true };
+    // case GOOGLE_AUTH_CALLBACK:
+    //   return { ...state, isWaitForAuthCallback: true };
+    // case FINISH_GOOGLE_AUTH:
+    //   return { ...state, isAuthInProcess: false, isWaitForAuthCallback: false };
+    // case GOOGLE_AUTH_ERROR:
+    //   return { ...state, isAuthInProcess: false, isWaitForAuthCallback: false, isError: true };
     default:
       return state;
   }

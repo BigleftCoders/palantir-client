@@ -10,7 +10,7 @@ const Auth = {
   }
 };
 
-const GOOGLE_AUTH_ENDPOINT = '/auth/google';
+// const GOOGLE_AUTH_ENDPOINT = '/auth/google';
 
-export { GOOGLE_AUTH_ENDPOINT };
+// export { GOOGLE_AUTH_ENDPOINT };
 export default Auth;

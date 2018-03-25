@@ -19,18 +19,29 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 // import { AuthProps } from './types';
 
 interface IAuthActions {
-  doGoogleAuthCallback: () => any;
-  openGoogleAuthWindow: () => any;
+  doGoogleAuthCallback: (code: string) => void;
+  openGoogleAuthWindow: () => void;
 }
-
 interface IProps extends RouteComponentProps<any> {
   auth: any;
   authActions: IAuthActions;
 }
+interface IState {
+  isLoading: boolean;
+}
 
-class AuthScreen extends React.Component<IProps> {
+class AuthScreen extends React.Component<IProps, IState> {
+  state: IState = {
+    isLoading: false
+  };
+
   handleGoogleAuth = () => {
-    this.props.authActions.openGoogleAuthWindow();
+    // this.props.authActions.openGoogleAuthWindow();
+    window.open(
+      `${process.env.REACT_APP_API_URL}/auth/google`,
+      '_self',
+      'height=400,width=400,fullscreen=no'
+    );
   };
 
   componentDidMount() {
@@ -39,21 +50,21 @@ class AuthScreen extends React.Component<IProps> {
     console.log(code);
 
     if (code) {
-      this.props.authActions.doGoogleAuthCallback();
+      this.props.authActions.doGoogleAuthCallback(code);
     }
   }
 
   render() {
-    const { isAuthInProcess, isWaitForAuthCallback } = this.props.auth;
+    // const { isAuthInProcess, isWaitForAuthCallback } = this.props.auth;
 
     return (
       <STWrapper>
-        <LoadingSpinner isLoading={isWaitForAuthCallback} spinnerSize="large">
+        <LoadingSpinner isLoading={this.state.isLoading} spinnerSize="large">
           <div>
             <STGreet>Hello</STGreet>
             <Button
               onClick={this.handleGoogleAuth}
-              loading={isAuthInProcess}
+              loading={this.state.isLoading}
               type="primary"
               icon="google-plus"
               size="large"
@@ -95,4 +106,6 @@ const STWrapper = styled.div`
   align-items: center;
 `;
 
-export default connect<any, any, any>(mapStateToProps, mapDispatchToProps)(AuthScreen);
+export default connect<any, any, any>(mapStateToProps, mapDispatchToProps)(
+  AuthScreen
+);
