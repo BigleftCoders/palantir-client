@@ -21,6 +21,7 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 interface IAuthActions {
   doGoogleAuthCallback: (code: string) => void;
   openGoogleAuthWindow: () => void;
+  getProfile: () => any;
 }
 interface IProps extends RouteComponentProps<any> {
   auth: any;
@@ -44,13 +45,22 @@ class AuthScreen extends React.Component<IProps, IState> {
     );
   };
 
-  componentDidMount() {
-    const parsedCodeObj = queryString.parseUrl(this.props.location.search);
-    const code = parsedCodeObj.query.code;
-    console.log(code);
+  async componentDidMount() {
+    try {
+      const parsedCodeObj = queryString.parseUrl(this.props.location.search);
+      const code = parsedCodeObj.query.code;
 
-    if (code) {
-      this.props.authActions.doGoogleAuthCallback(code);
+      if (code) {
+        await this.props.authActions.doGoogleAuthCallback(code);
+      }
+      const profile = await this.props.authActions.getProfile();
+      if (profile) {
+        // LS SET TOKEN OR USER
+        this.props.history.push('/room');
+      }
+      // debugger;
+    } catch (error) {
+      throw error;
     }
   }
 

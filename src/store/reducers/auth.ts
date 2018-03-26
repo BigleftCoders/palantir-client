@@ -7,8 +7,8 @@ import {
   SET_USER_DATA
 } from '../constants/Auth';
 interface IUserData {
-  firstName: string;
-  lastName: string;
+  displayName: string;
+  id: '' | number;
 }
 interface IAuthState {
   userData: IUserData;
@@ -16,8 +16,8 @@ interface IAuthState {
 
 const initialState: IAuthState = {
   userData: {
-    firstName: '',
-    lastName: ''
+    displayName: '',
+    id: ''
   }
   // isAuthInProcess: false,
   // isWaitForAuthCallback: false,

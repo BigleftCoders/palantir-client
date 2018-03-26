@@ -7,6 +7,9 @@ const Auth = {
         code
       }
     });
+  },
+  getProfile() {
+    return axios.get('/auth/profile');
   }
 };
 

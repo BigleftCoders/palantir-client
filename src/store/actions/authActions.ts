@@ -24,12 +24,8 @@ export function doGoogleAuthCallback(code: string) {
       const response: any = await Auth.doGoogleAuthCallback(code);
       console.log(response);
       // const userData = await response.json();
-      debugger;
       dispatch({ type: SET_USER_DATA, payload: response.data });
       // console.log(userData);
-
-      window.close();
-
       // dispatch({ type: FINISH_GOOGLE_AUTH });
     } catch (error) {
       // dispatch({ type: GOOGLE_AUTH_ERROR });
@@ -37,3 +33,15 @@ export function doGoogleAuthCallback(code: string) {
     }
   };
 }
+
+export const getProfile = () => {
+  return async (dispatch: any) => {
+    try {
+      const user = await Auth.getProfile();
+      debugger;
+      dispatch({ type: SET_USER_DATA, payload: user.data });
+    } catch (error) {
+      throw error;
+    }
+  };
+};
