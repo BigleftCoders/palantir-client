@@ -51,7 +51,7 @@ class AuthScreen extends React.Component<IProps, IState> {
       const code = parsedCodeObj.query.code;
 
       if (code) {
-        await this.props.authActions.doGoogleAuthCallback(code);
+        this.props.authActions.doGoogleAuthCallback(code);
       }
       const profile = await this.props.authActions.getProfile();
       if (profile) {
@@ -116,6 +116,4 @@ const STWrapper = styled.div`
   align-items: center;
 `;
 
-export default connect<any, any, any>(mapStateToProps, mapDispatchToProps)(
-  AuthScreen
-);
+export default connect<any, any, any>(mapStateToProps, mapDispatchToProps)(AuthScreen);
