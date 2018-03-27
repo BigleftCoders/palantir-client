@@ -11,6 +11,9 @@ const Auth = {
 
   getProfile() {
     return axios.get('/auth/profile');
+  },
+  logout() {
+    return axios.get('/auth/logout');
   }
 };
 

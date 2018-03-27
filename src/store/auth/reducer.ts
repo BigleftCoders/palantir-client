@@ -1,4 +1,4 @@
-// import { Auth } from 'api/auth';
+import { IAuthState } from './types';
 import {
   // INIT_GOOGLE_AUTH,
   // GOOGLE_AUTH_CALLBACK,
@@ -6,13 +6,6 @@ import {
   // GOOGLE_AUTH_ERROR
   SET_USER_DATA
 } from './constants';
-interface IUserData {
-  displayName: string;
-  id: '' | number;
-}
-interface IAuthState {
-  userData: IUserData;
-}
 
 const initialState: IAuthState = {
   userData: {

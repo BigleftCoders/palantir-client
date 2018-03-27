@@ -8,18 +8,19 @@ import { Button } from 'antd';
 import * as queryString from 'query-string';
 
 // actions
-import * as authActions from 'store/auth/actions';
+import * as authActions from 'store/Auth/actions';
 
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
+import { IUserData } from 'store/Auth/types';
 
 // types
 // import { AuthProps } from './types';
 
 interface IProps extends RouteComponentProps<any> {
   auth: any;
-  doGoogleAuthCallback: (code: string) => void;
-  getProfile: () => any;
+  doGoogleAuthCallback: (code: string) => Promise<any>;
+  getProfile: () => Promise<IUserData>;
 }
 
 interface IState {
@@ -41,7 +42,6 @@ class AuthScreen extends React.Component<IProps, IState> {
 
   async componentDidMount() {
     const { doGoogleAuthCallback, getProfile, location, history } = this.props;
-
     try {
       const parsedCodeObj = queryString.parseUrl(location.search);
       const code = parsedCodeObj.query.code;
@@ -51,9 +51,10 @@ class AuthScreen extends React.Component<IProps, IState> {
       }
       const profile = await getProfile();
       if (profile) {
-        history.push('/room');
+        history.push('/');
       }
     } catch (error) {
+      history.push('/login');
       throw error;
     }
   }
