@@ -1,16 +1,14 @@
 import * as React from 'react';
-// tslint:disable-next-line
-import styled from 'styled-components';
+import styled from 'types/styled-components';
 import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { Button } from 'antd';
 
 // api
 import * as queryString from 'query-string';
 
 // actions
-import * as authActions from 'store/actions/authActions';
+import * as authActions from 'store/auth/actions';
 
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
@@ -18,15 +16,12 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 // types
 // import { AuthProps } from './types';
 
-interface IAuthActions {
-  doGoogleAuthCallback: (code: string) => void;
-  openGoogleAuthWindow: () => void;
-  getProfile: () => any;
-}
 interface IProps extends RouteComponentProps<any> {
   auth: any;
-  authActions: IAuthActions;
+  doGoogleAuthCallback: (code: string) => void;
+  getProfile: () => any;
 }
+
 interface IState {
   isLoading: boolean;
 }
@@ -37,7 +32,6 @@ class AuthScreen extends React.Component<IProps, IState> {
   };
 
   handleGoogleAuth = () => {
-    // this.props.authActions.openGoogleAuthWindow();
     window.open(
       `${process.env.REACT_APP_API_URL}/auth/google`,
       '_self',
@@ -46,18 +40,23 @@ class AuthScreen extends React.Component<IProps, IState> {
   };
 
   async componentDidMount() {
+    const { doGoogleAuthCallback, getProfile, location /* history */ } = this.props;
+
     try {
-      const parsedCodeObj = queryString.parseUrl(this.props.location.search);
+      const parsedCodeObj = queryString.parseUrl(location.search);
       const code = parsedCodeObj.query.code;
 
       if (code) {
-        await this.props.authActions.doGoogleAuthCallback(code);
+        doGoogleAuthCallback(code);
       }
-      const profile = await this.props.authActions.getProfile();
-      if (profile) {
-        // LS SET TOKEN OR USER
-        this.props.history.push('/room');
-      }
+
+      // это ж экшн, профайл нужно из стора доставать
+      // const profile = await getProfile();
+      getProfile();
+      // if (profile) {
+      // LS SET TOKEN OR USER
+      // history.push('/room');
+      // }
       // debugger;
     } catch (error) {
       throw error;
@@ -65,8 +64,6 @@ class AuthScreen extends React.Component<IProps, IState> {
   }
 
   render() {
-    // const { isAuthInProcess, isWaitForAuthCallback } = this.props.auth;
-
     return (
       <STWrapper>
         <LoadingSpinner isLoading={this.state.isLoading} spinnerSize="large">
@@ -88,18 +85,6 @@ class AuthScreen extends React.Component<IProps, IState> {
   }
 }
 
-function mapStateToProps(state: any) {
-  return {
-    auth: state.auth
-  };
-}
-
-function mapDispatchToProps(dispatch: any) {
-  return {
-    authActions: bindActionCreators(authActions, dispatch)
-  };
-}
-
 const STGreet = styled.p`
   margin-bottom: 10px;
   font-family: Roboto, sans-serif;
@@ -116,6 +101,8 @@ const STWrapper = styled.div`
   align-items: center;
 `;
 
-export default connect<any, any, any>(mapStateToProps, mapDispatchToProps)(
-  AuthScreen
-);
+const mapStateToProps = (state: any) => ({
+  auth: state.auth
+});
+
+export default connect<any, any, any>(mapStateToProps, authActions)(AuthScreen);

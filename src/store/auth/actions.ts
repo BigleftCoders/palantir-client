@@ -1,25 +1,12 @@
 import {
   // GOOGLE_AUTH_ERROR,
-  // GOOGLE_AUTH_CALLBACK,
-  // FINISH_GOOGLE_AUTH,
   // INIT_GOOGLE_AUTH
   SET_USER_DATA
-} from '../constants/Auth';
+} from './constants';
 import Auth from 'api/auth';
-// import Auth, { GOOGLE_AUTH_ENDPOINT } from 'api/auth';
-
-// export function openGoogleAuthWindow() {
-//   return (dispatch: any) => {
-
-//     dispatch();
-//   };
-//   // return { type: INIT_GOOGLE_AUTH };
-// }
 
 export function doGoogleAuthCallback(code: string) {
   return async (dispatch: any) => {
-    // dispatch({ type: GOOGLE_AUTH_CALLBACK });
-
     try {
       const response: any = await Auth.doGoogleAuthCallback(code);
       console.log(response);
