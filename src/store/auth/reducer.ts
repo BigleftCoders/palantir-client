@@ -5,7 +5,7 @@ import {
   // FINISH_GOOGLE_AUTH,
   // GOOGLE_AUTH_ERROR
   SET_USER_DATA
-} from '../constants/Auth';
+} from './constants';
 interface IUserData {
   displayName: string;
   id: '' | number;
