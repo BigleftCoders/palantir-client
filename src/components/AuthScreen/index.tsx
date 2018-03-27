@@ -55,7 +55,7 @@ class AuthScreen extends React.Component<IProps, IState> {
       }
       const profile = await this.props.authActions.getProfile();
       if (profile) {
-        // LS SET TOKEN OR USER
+        console.log('PROFILE', profile);
         this.props.history.push('/room');
       }
       // debugger;

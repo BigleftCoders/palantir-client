@@ -1,13 +1,10 @@
 import * as React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
-
+import { BrowserRouter } from 'react-router-dom';
 // styles
 import 'styles/main.css';
 
-// components
-import AuthScreen from './AuthScreen';
-import Room from './Room';
+import Routes from './routes';
 
 // store
 import configureStore from 'store';
@@ -15,14 +12,14 @@ import configureStore from 'store';
 const store = configureStore();
 
 class App extends React.Component {
+  async componentDidMount() {
+    console.log('fishka');
+  }
   render() {
     return (
       <Provider store={store}>
         <BrowserRouter>
-          <Switch>
-            <Route path="/" component={AuthScreen} />
-            <Route path="/room" component={Room} />
-          </Switch>
+          <Routes />
         </BrowserRouter>
       </Provider>
     );

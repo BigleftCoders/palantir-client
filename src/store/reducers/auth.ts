@@ -28,7 +28,7 @@ export default function auth(state = initialState, action: any) {
   switch (action.type) {
     case SET_USER_DATA:
       return {
-        state,
+        ...state,
         userData: action.payload
       };
     // case INIT_GOOGLE_AUTH:

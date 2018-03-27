@@ -38,8 +38,8 @@ export const getProfile = () => {
   return async (dispatch: any) => {
     try {
       const user = await Auth.getProfile();
-      debugger;
       dispatch({ type: SET_USER_DATA, payload: user.data });
+      return user;
     } catch (error) {
       throw error;
     }
