@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import rootReducer from './reducers/rootReducer';
+import rootReducer from './rootReducer';
 
 export default function configureStore(initialState?: object) {
   const devtools: any = window['devToolsExtension'] ? window['devToolsExtension']() : (f: any) => f;

@@ -10,7 +10,7 @@ import AuthScreen from './AuthScreen';
 import Room from './Room';
 
 // store
-import configureStore from 'store';
+import configureStore from 'store/configureStore';
 
 const store = configureStore();
 

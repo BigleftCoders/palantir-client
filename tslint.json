@@ -40,6 +40,7 @@
         "named": "never"
       }
     ],
-    "no-this-assignment": true
+    "no-this-assignment": true,
+    "no-shadowed-variable": false
   }
 }
