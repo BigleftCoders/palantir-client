@@ -13,7 +13,6 @@ import { doGoogleAuthCallback } from 'store/Auth/actions';
 import { IUserData } from 'store/Auth/types';
 
 interface IProps extends RouteComponentProps<any> {
-  auth: any;
   doGoogleAuthCallback: (code: string) => Promise<IUserData>;
 }
 
@@ -93,8 +92,4 @@ const STWrapper = styled.div`
   align-items: center;
 `;
 
-const mapStateToProps = (state: any) => ({
-  auth: state.auth
-});
-
-export default connect<any, any, any>(mapStateToProps, { doGoogleAuthCallback })(AuthScreen);
+export default connect<any, any, any>(null, { doGoogleAuthCallback })(AuthScreen);

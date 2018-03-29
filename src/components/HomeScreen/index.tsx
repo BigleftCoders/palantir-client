@@ -2,30 +2,31 @@ import * as React from 'react';
 import styled from 'types/styled-components';
 import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
-import { Button, Layout } from 'antd';
+// import { Button } from 'antd';
+
+// components
+import AppHeader from 'components/AppHeader';
 
 // store
 import { logout } from 'store/Auth/actions';
 
-interface IProps extends RouteComponentProps<any> {
-  logout: () => Promise<any>;
-}
+interface IProps extends RouteComponentProps<any> {}
 
-class HomeScreen extends React.Component<IProps> {
-  handleLogout = async () => {
-    const { logout, history } = this.props;
-    await logout();
-    history.push('/login');
-  };
-
+class HomeScreen extends React.Component<IProps, any> {
   render() {
     return (
-      <Layout>
+      <STAppWrapper>
+        <AppHeader />
         <p>home screen</p>
-        <Button onClick={this.handleLogout}>Logout</Button>
-      </Layout>
+      </STAppWrapper>
     );
   }
 }
 
-export default connect<any, any, any>(null, { logout })(HomeScreen);
+const STAppWrapper = styled.div`
+  width: 1000px;
+  margin: 0 auto;
+`;
+
+// пока просто подрублен к стору, но ничего из него не берет
+export default connect<any, any, any>(null, null)(HomeScreen);

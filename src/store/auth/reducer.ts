@@ -6,9 +6,6 @@ const initialState: IAuthState = {
     displayName: '',
     googleId: ''
   }
-  // isAuthInProcess: false,
-  // isWaitForAuthCallback: false,
-  // isError: false
 };
 
 export default function auth(state = initialState, action: any) {
