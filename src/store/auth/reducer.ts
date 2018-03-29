@@ -1,20 +1,11 @@
 import { IAuthState } from './types';
-import {
-  // INIT_GOOGLE_AUTH,
-  // GOOGLE_AUTH_CALLBACK,
-  // FINISH_GOOGLE_AUTH,
-  // GOOGLE_AUTH_ERROR
-  SET_USER_DATA
-} from './constants';
+import { SET_USER_DATA, LOGOUT } from './constants';
 
 const initialState: IAuthState = {
   userData: {
     displayName: '',
-    id: ''
+    googleId: ''
   }
-  // isAuthInProcess: false,
-  // isWaitForAuthCallback: false,
-  // isError: false
 };
 
 export default function auth(state = initialState, action: any) {
@@ -24,14 +15,14 @@ export default function auth(state = initialState, action: any) {
         ...state,
         userData: action.payload
       };
-    // case INIT_GOOGLE_AUTH:
-    //   return { ...state, isAuthInProcess: true };
-    // case GOOGLE_AUTH_CALLBACK:
-    //   return { ...state, isWaitForAuthCallback: true };
-    // case FINISH_GOOGLE_AUTH:
-    //   return { ...state, isAuthInProcess: false, isWaitForAuthCallback: false };
-    // case GOOGLE_AUTH_ERROR:
-    //   return { ...state, isAuthInProcess: false, isWaitForAuthCallback: false, isError: true };
+    case LOGOUT:
+      return {
+        ...state,
+        userData: {
+          displayName: '',
+          googleId: ''
+        }
+      };
     default:
       return state;
   }

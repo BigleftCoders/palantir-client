@@ -1,26 +1,19 @@
 import * as React from 'react';
 import styled from 'types/styled-components';
+import * as queryString from 'query-string';
 import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
 import { Button } from 'antd';
 
-// api
-import * as queryString from 'query-string';
-
-// actions
-import * as authActions from 'store/Auth/actions';
-
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
+
+// store
+import { doGoogleAuthCallback } from 'store/Auth/actions';
 import { IUserData } from 'store/Auth/types';
 
-// types
-// import { AuthProps } from './types';
-
 interface IProps extends RouteComponentProps<any> {
-  auth: any;
-  doGoogleAuthCallback: (code: string) => Promise<any>;
-  getProfile: () => Promise<IUserData>;
+  doGoogleAuthCallback: (code: string) => Promise<IUserData>;
 }
 
 interface IState {
@@ -41,33 +34,35 @@ class AuthScreen extends React.Component<IProps, IState> {
   };
 
   async componentDidMount() {
-    const { doGoogleAuthCallback, getProfile, location, history } = this.props;
+    const { doGoogleAuthCallback, location, history } = this.props;
     try {
       const parsedCodeObj = queryString.parseUrl(location.search);
       const code = parsedCodeObj.query.code;
 
       if (code) {
-        await doGoogleAuthCallback(code);
-      }
-      const profile = await getProfile();
-      if (profile) {
-        history.push('/');
+        this.setState({ isLoading: true });
+        const profile = await doGoogleAuthCallback(code);
+
+        if (profile) {
+          history.push('/');
+        }
       }
     } catch (error) {
       history.push('/login');
-      throw error;
     }
   }
 
   render() {
+    const { isLoading } = this.state;
+
     return (
       <STWrapper>
-        <LoadingSpinner isLoading={this.state.isLoading} spinnerSize="large">
+        <LoadingSpinner isLoading={isLoading} spinnerSize="large">
           <div>
             <STGreet>Hello</STGreet>
             <Button
               onClick={this.handleGoogleAuth}
-              loading={this.state.isLoading}
+              loading={isLoading}
               type="primary"
               icon="google-plus"
               size="large"
@@ -97,8 +92,4 @@ const STWrapper = styled.div`
   align-items: center;
 `;
 
-const mapStateToProps = (state: any) => ({
-  auth: state.auth
-});
-
-export default connect<any, any, any>(mapStateToProps, authActions)(AuthScreen);
+export default connect<any, any, any>(null, { doGoogleAuthCallback })(AuthScreen);

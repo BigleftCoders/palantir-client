@@ -2,7 +2,7 @@
   "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
   "rules": {
     "no-console": [false, "log"],
-    "no-debugger": false,
+    "no-debugger": { "severity": "warning", "options": [true] },
     "curly": [true, "ignore-same-line"],
     "object-literal-sort-keys": false,
     "jsx-boolean-value": false,
@@ -10,12 +10,15 @@
     "ordered-imports": false,
     "member-access": [false],
     "no-string-literal": false,
-    "no-unused-variable": [
-      true,
-      {
-        "ignore-pattern": "^_"
-      }
-    ],
+    "no-unused-variable": {
+      "severity": "warning",
+      "options": [
+        true,
+        {
+          "ignore-pattern": "^_"
+        }
+      ]
+    },
     "await-promise": true,
     "label-position": true,
     "no-duplicate-imports": true,
@@ -30,8 +33,8 @@
     "no-unnecessary-type-assertion": true,
     "one-variable-per-declaration": true,
     "whitespace": [true, "check-branch", "check-decl", "check-operator", "check-preblock"],
-    "no-empty": true,
-    "prefer-const": true,
+    "no-empty": { "severity": "warning", "options": [true] },
+    "prefer-const": { "severity": "warning", "options": [true] },
     "quotemark": [true, "single", "jsx-double"],
     "space-before-function-paren": [
       true,
