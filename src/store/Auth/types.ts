@@ -1,6 +1,6 @@
 export interface IUserData {
   displayName: string;
-  id: '' | number;
+  googleId: '' | number;
 }
 export interface IAuthState {
   userData: IUserData;
