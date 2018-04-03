@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'types/styled-components';
 import { withRouter, RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Icon, Menu, Dropdown } from 'antd';
 
@@ -29,9 +30,13 @@ class AppHeader extends React.Component<IProps, any> {
   renderDropdown = () => {
     return (
       <Menu onClick={this.handleMenuItemClick}>
-        <Menu.Item key="settings">Settings</Menu.Item>
+        <Menu.Item key="settings">
+          <STOptionTitle>Settings</STOptionTitle>
+        </Menu.Item>
         <Menu.Divider />
-        <Menu.Item key="logout">Logout</Menu.Item>
+        <Menu.Item key="logout">
+          <STOptionTitle>Logout</STOptionTitle>
+        </Menu.Item>
       </Menu>
     );
   };
@@ -43,15 +48,17 @@ class AppHeader extends React.Component<IProps, any> {
   }
 
   render() {
-    const userName = this.userName;
+    const dropdownList = this.renderDropdown();
 
     return (
       <STHeaderWrap>
-        <STLogo>Palantir</STLogo>
+        <STLogo>
+          <Link to="/">Palantir</Link>
+        </STLogo>
         <STOptionsSection>
-          <STUserName>{userName}</STUserName>
+          <STUserName>{this.userName}</STUserName>
           <STOptionsIcon>
-            <Dropdown overlay={this.renderDropdown()} placement="bottomRight" trigger={['click']}>
+            <Dropdown overlay={dropdownList} placement="bottomRight" trigger={['click']}>
               <Icon type="setting" />
             </Dropdown>
           </STOptionsIcon>
@@ -66,13 +73,25 @@ const STHeaderWrap = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 48px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #64b5f6;
+  margin-bottom: 25px;
+  padding: 0 20px;
+  color: #fff;
+  background-color: #4496d8;
 `;
 
 const STLogo = styled.div`
   font-size: 18px;
   font-weight: 600;
+  > a {
+    font-family: 'Pacifico', sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    color: #fff;
+    text-decoration: none;
+    &:hover {
+      color: #b3e5fc;
+    }
+  }
 `;
 
 const STOptionsSection = styled.div`
@@ -91,6 +110,10 @@ const STUserName = styled.div`
 const STOptionsIcon = styled.div`
   font-size: 24px;
   cursor: pointer;
+`;
+
+const STOptionTitle = styled.div`
+  font-size: 16px;
 `;
 
 const mapStateToProps = (state: any) => ({

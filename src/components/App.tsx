@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { getProfile } from 'store/Auth/actions';
 
 // components
 import Routes from './routes';
 
 // store
 import { IUserData } from 'store/Auth/types';
+import { getProfile } from 'store/Auth/actions';
 
 // styles
 import 'styles/main.css';

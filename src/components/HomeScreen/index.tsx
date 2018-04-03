@@ -2,30 +2,85 @@ import * as React from 'react';
 import styled from 'types/styled-components';
 import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
-// import { Button } from 'antd';
+import { Button, List, Avatar } from 'antd';
 
 // components
-import AppHeader from 'components/AppHeader';
-
-// store
-import { logout } from 'store/Auth/actions';
 
 interface IProps extends RouteComponentProps<any> {}
 
 class HomeScreen extends React.Component<IProps, any> {
   render() {
+    const data = [
+      {
+        title: 'Room 1'
+      },
+      {
+        title: 'Room 2'
+      },
+      {
+        title: 'Room 3'
+      },
+      {
+        title: 'Room 4'
+      }
+    ];
+
     return (
-      <STAppWrapper>
-        <AppHeader />
-        <p>home screen</p>
-      </STAppWrapper>
+      <STContentWrap>
+        <STRoomsActions>
+          <Button
+            type="primary"
+            ghost
+            icon="plus"
+            style={{ borderStyle: 'dashed', fontSize: '18px', marginRight: '15px' }}
+          />
+          <STListDescrip>Joined rooms</STListDescrip>
+        </STRoomsActions>
+        <List
+          itemLayout="horizontal"
+          dataSource={data}
+          renderItem={(item: any) => (
+            <List.Item>
+              <List.Item.Meta
+                avatar={
+                  <STRoomLink href="http://localhost:3000/">
+                    <Avatar src="https://svgshare.com/i/66t.svg" />
+                  </STRoomLink>
+                }
+                title={<a href="http://localhost:3000/">{item.title}</a>}
+                description={
+                  <STRoomLink href="http://localhost:3000/">
+                    Ant Design, a design language for background applications, is refined by Ant UED
+                    Team
+                  </STRoomLink>
+                }
+              />
+            </List.Item>
+          )}
+        />
+      </STContentWrap>
     );
   }
 }
 
-const STAppWrapper = styled.div`
-  width: 1000px;
-  margin: 0 auto;
+const STContentWrap = styled.div``;
+
+const STRoomsActions = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 25px;
+`;
+
+const STListDescrip = styled.h4`
+  font-size: 18px;
+  font-weight: 600;
+  color: #4496d8;
+`;
+
+const STRoomLink = styled.a`
+  text-decoration: none;
+  color: #9e9e9e;
 `;
 
 // пока просто подрублен к стору, но ничего из него не берет
