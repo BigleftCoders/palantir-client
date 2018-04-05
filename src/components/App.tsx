@@ -19,10 +19,12 @@ interface IProps extends RouteComponentProps<any> {
 class App extends React.Component<IProps> {
   async componentDidMount() {
     const { getProfile, history } = this.props;
+    const { pathname } = history.location;
+
     try {
       const profile = await getProfile();
 
-      if (profile) {
+      if (profile && pathname !== '/') {
         history.push('/');
       }
     } catch (error) {
