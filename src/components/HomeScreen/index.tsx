@@ -3,7 +3,7 @@ import styled from 'types/styled-components';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Button, List, Avatar } from 'antd';
+import { Button, List, Avatar, Modal, Form, Input } from 'antd';
 
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
@@ -14,12 +14,15 @@ import { IRoomsState, IRoom } from 'store/Rooms/types';
 
 interface IProps extends RouteComponentProps<any> {
   rooms: IRoom[];
+  form: any;
   fetchRooms: () => Promise<any>;
 }
 
 class HomeScreen extends React.Component<IProps, any> {
   state = {
-    isFetchingRooms: true
+    isFetchingRooms: true,
+    isCreateModalVisible: false,
+    isSavingRoom: false
   };
 
   componentDidMount() {
@@ -31,17 +34,32 @@ class HomeScreen extends React.Component<IProps, any> {
     this.setState({ isFetchingRooms: false });
   };
 
+  handleCreateModalShow = () => {
+    this.setState({ isCreateModalVisible: true });
+  };
+
+  handleCreateModalHide = () => {
+    this.setState({ isCreateModalVisible: false });
+  };
+
   render() {
-    const { rooms } = this.props;
-    const { isFetchingRooms } = this.state;
+    const { rooms, form } = this.props;
+    const { getFieldDecorator } = form;
+    const { isFetchingRooms, isCreateModalVisible, isSavingRoom } = this.state;
     const buttonStyles = { borderStyle: 'dashed', fontSize: '18px', marginRight: '15px' };
 
     return (
-      <STContentWrap>
+      <div>
         <STRoomsActions>
           <STListDescrip>Joined rooms</STListDescrip>
           <STRoomsActionsWrap>
-            <Button type="primary" ghost icon="plus" style={buttonStyles} />
+            <Button
+              type="primary"
+              ghost
+              icon="plus"
+              style={buttonStyles}
+              onClick={this.handleCreateModalShow}
+            />
             <Button type="primary" ghost icon="link" style={buttonStyles} />
             <Button type="primary" ghost icon="scan" style={buttonStyles} />
           </STRoomsActionsWrap>
@@ -65,12 +83,29 @@ class HomeScreen extends React.Component<IProps, any> {
             )}
           />
         </LoadingSpinner>
-      </STContentWrap>
+
+        <Modal
+          title="Create room"
+          visible={isCreateModalVisible}
+          onOk={this.handleCreateModalHide}
+          confirmLoading={isSavingRoom}
+          onCancel={this.handleCreateModalHide}
+        >
+          <Form /*onSubmit={this.handleSubmit}*/>
+            <Form.Item label="Title" labelCol={{ span: 5 }} wrapperCol={{ span: 12 }}>
+              {getFieldDecorator('Title', {
+                rules: [{ required: true, message: 'Please input room title' }]
+              })(<Input />)}
+            </Form.Item>
+            <Form.Item label="Description" labelCol={{ span: 5 }} wrapperCol={{ span: 12 }}>
+              {getFieldDecorator('Description', {})(<Input.TextArea autosize={true} />)}
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
     );
   }
 }
-
-const STContentWrap = styled.div``;
 
 const STRoomsActions = styled.div`
   display: flex;
@@ -102,4 +137,6 @@ const STRoomLink = styled(Link)`
 
 const mapStateToProps = ({ rooms }: IRoomsState) => ({ rooms });
 
-export default connect<any, any, any>(mapStateToProps, { fetchRooms })(HomeScreen);
+export default connect<any, any, any>(mapStateToProps, { fetchRooms })(
+  Form.create()<any>(HomeScreen)
+);
