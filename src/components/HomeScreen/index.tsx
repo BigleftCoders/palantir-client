@@ -11,7 +11,8 @@ import CreateRoom from 'components/modals/CreateRoom';
 
 // store
 import { fetchRooms } from 'store/Rooms/actions';
-import { IRoomsState, IRoom } from 'store/Rooms/types';
+import { IRoom } from 'store/Rooms/types';
+import { IGlobalStore } from 'store/types';
 
 interface IProps extends RouteComponentProps<any> {
   rooms: IRoom[];
@@ -64,7 +65,7 @@ class HomeScreen extends React.Component<IProps, IState> {
                     </STRoomLink>
                   }
                   title={<Link to="/">{roomName}</Link>}
-                  description={<STRoomLink to="/">{description}</STRoomLink>}
+                  description={description && <STRoomLink to="/">{description}</STRoomLink>}
                 />
               </List.Item>
             )}
@@ -103,6 +104,6 @@ const STRoomLink = styled(Link)`
   color: #9e9e9e;
 `;
 
-const mapStateToProps = ({ rooms }: IRoomsState) => ({ rooms });
+const mapStateToProps = ({ rooms }: IGlobalStore) => ({ rooms: rooms.roomsItems });
 
 export default connect<any, any, any>(mapStateToProps, { fetchRooms })(HomeScreen);

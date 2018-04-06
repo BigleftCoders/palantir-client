@@ -6,7 +6,3 @@ export interface IUserData {
 export interface IAuthState {
   userData: IUserData;
 }
-
-export interface IGlobalStore {
-  auth: IAuthState;
-}

@@ -8,6 +8,7 @@ import { Icon, Menu, Dropdown } from 'antd';
 // store
 import { logout } from 'store/Auth/actions';
 import { IUserData } from 'store/Auth/types';
+import { IGlobalStore } from 'store/types';
 
 interface IProps extends RouteComponentProps<any> {
   userData: IUserData;
@@ -116,8 +117,8 @@ const STOptionTitle = styled.div`
   font-size: 16px;
 `;
 
-const mapStateToProps = (state: any) => ({
-  userData: state.auth.userData
+const mapStateToProps = ({ auth }: IGlobalStore) => ({
+  userData: auth.userData
 });
 
 export default withRouter(connect<any, any, any>(mapStateToProps, { logout })(AppHeader));
