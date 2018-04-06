@@ -8,12 +8,12 @@ const initialState: IAuthState = {
   }
 };
 
-export default function auth(state = initialState, action: any) {
-  switch (action.type) {
+export default function auth(state = initialState, { type, payload }: any) {
+  switch (type) {
     case SET_USER_DATA:
       return {
         ...state,
-        userData: action.payload
+        userData: payload
       };
     case LOGOUT:
       return {
