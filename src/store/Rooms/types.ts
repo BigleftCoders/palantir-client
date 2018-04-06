@@ -1,10 +1,10 @@
 export interface IRoomsState {
-  rooms: IRoom[];
+  roomsItems: IRoom[];
 }
 
 export interface IRoom {
   roomName: string;
-  description: string;
+  description?: string;
   roomId: number;
 }
 
