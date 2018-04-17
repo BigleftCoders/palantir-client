@@ -12,7 +12,7 @@ class Routes extends React.Component {
     return (
       <Switch>
         <AppRoute exact path="/" component={HomeScreen} />
-        <AppRoute path="/room:id" component={Room} />
+        <AppRoute path="/room/:id" component={Room} />
 
         <Route path="/login" component={AuthScreen} />
       </Switch>

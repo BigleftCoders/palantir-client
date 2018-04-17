@@ -1,11 +1,15 @@
 import * as React from 'react';
 import styled from 'types/styled-components';
-import { Button, Modal, Form, Input } from 'antd';
+import { Modal, Form, Input } from 'antd';
+import { withRouter, RouteComponentProps } from 'react-router';
+
+// components
+import { STActionButton } from 'components/common/styled';
 
 // api
 import Rooms from 'api/rooms';
 
-interface IProps {
+interface IProps extends RouteComponentProps<any> {
   form: any;
 }
 
@@ -25,17 +29,24 @@ class CreateRoom extends React.Component<IProps, IState> {
   };
 
   handleRoomCreate = () => {
-    const { form } = this.props;
+    const { form, history } = this.props;
 
     form.validateFields(async (err: any, values: any) => {
       if (err) return;
 
       this.setState({ isSavingRoom: true });
-      const { title /* description */ } = form.getFieldsValue();
-      await Rooms.createRoom({ roomName: title });
+      const { title, description } = form.getFieldsValue();
 
-      form.resetFields();
-      this.setState({ isSavingRoom: false, isVisible: false });
+      try {
+        const response: any = await Rooms.createRoom({
+          roomName: title,
+          description
+        });
+        const { roomId } = response.data;
+        history.push(`/room/${roomId}`);
+      } catch (error) {
+        throw error;
+      }
     });
   };
 
@@ -46,11 +57,10 @@ class CreateRoom extends React.Component<IProps, IState> {
 
     return (
       <div>
-        <Button
+        <STActionButton
           type="primary"
           ghost
           icon="plus"
-          style={{ borderStyle: 'dashed', fontSize: '18px', marginRight: '15px' }}
           onClick={this.handleCreateModalVisibility}
         />
         <Modal
@@ -96,5 +106,4 @@ const STFormWrap = styled.div`
     margin-bottom: 0;
   }
 `;
-
-export default Form.create()(CreateRoom);
+export default Form.create()(withRouter(CreateRoom));

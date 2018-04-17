@@ -20,6 +20,7 @@ class AppLayout extends React.Component<any, any> {
 const STAppWrapper = styled.div`
   width: 1000px;
   margin: 0 auto;
+  padding-left: calc(100vw - 100%);
 `;
 
 export default AppLayout;
