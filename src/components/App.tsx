@@ -6,8 +6,10 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import Routes from './routes';
 
 // store
-import { IUserData } from 'store/Auth/types';
 import { getProfile } from 'store/Auth/actions';
+
+// types
+import { IUserData } from 'store/Auth/types';
 
 // styles
 import 'styles/main.css';

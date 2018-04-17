@@ -12,6 +12,10 @@ const Rooms = {
 
   createRoom(options: ICreateRoomOptions) {
     return axios.post('/room/create', options);
+  },
+
+  getRoom(roomId: number) {
+    return axios.get(`/room/${roomId}`);
   }
 };
 

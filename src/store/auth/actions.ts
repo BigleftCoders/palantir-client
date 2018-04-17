@@ -1,14 +1,21 @@
 import { SET_USER_DATA, LOGOUT } from './constants';
 import Auth from 'api/auth';
 
-export const doGoogleAuthCallback = (code: string) => {
-  return async (dispatch: any) => {
-    try {
-      const response: any = await Auth.doGoogleAuthCallback(code);
-      dispatch({ type: SET_USER_DATA, payload: response.data });
-      console.log(response.data);
+// types
+import { AxiosResponse } from 'axios';
+import { IUserData } from './types';
+import { Dispatch } from 'redux';
 
-      return response.data;
+export const doGoogleAuthCallback = (code: string) => {
+  return async (dispatch: Dispatch<any>) => {
+    try {
+      const {
+        data
+      }: AxiosResponse<IUserData> = await Auth.doGoogleAuthCallback(code);
+      dispatch({ type: SET_USER_DATA, payload: data });
+      console.log(data);
+
+      return data;
     } catch (error) {
       throw error;
     }
@@ -16,13 +23,13 @@ export const doGoogleAuthCallback = (code: string) => {
 };
 
 export const getProfile = () => {
-  return async (dispatch: any) => {
+  return async (dispatch: Dispatch<any>) => {
     try {
-      const response: any = await Auth.getProfile();
-      dispatch({ type: SET_USER_DATA, payload: response.data });
-      console.log(response.data);
+      const { data }: AxiosResponse<IUserData> = await Auth.getProfile();
+      dispatch({ type: SET_USER_DATA, payload: data });
+      console.log(data);
 
-      return response.data;
+      return data;
     } catch (error) {
       throw error;
     }

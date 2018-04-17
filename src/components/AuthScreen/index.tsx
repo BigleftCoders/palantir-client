@@ -10,6 +10,8 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 
 // store
 import { doGoogleAuthCallback } from 'store/Auth/actions';
+
+// types
 import { IUserData } from 'store/Auth/types';
 
 interface IProps extends RouteComponentProps<any> {
@@ -92,4 +94,6 @@ const STWrapper = styled.div`
   align-items: center;
 `;
 
-export default connect<any, any, any>(null, { doGoogleAuthCallback })(AuthScreen);
+export default connect<any, any, any>(null, { doGoogleAuthCallback })(
+  AuthScreen
+);

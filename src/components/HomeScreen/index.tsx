@@ -12,6 +12,8 @@ import { STActionButton } from 'components/common/styled';
 
 // store
 import { fetchRooms } from 'store/Rooms/actions';
+
+// types
 import { IRoom } from 'store/Rooms/types';
 import { IGlobalStore } from 'store/types';
 

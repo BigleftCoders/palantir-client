@@ -7,6 +7,8 @@ import { Icon, Menu, Dropdown } from 'antd';
 
 // store
 import { logout } from 'store/Auth/actions';
+
+// types
 import { IUserData } from 'store/Auth/types';
 import { IGlobalStore } from 'store/types';
 
@@ -59,7 +61,11 @@ class AppHeader extends React.Component<IProps, any> {
         <STOptionsSection>
           <STUserName>{this.userName}</STUserName>
           <STOptionsIcon>
-            <Dropdown overlay={dropdownList} placement="bottomRight" trigger={['click']}>
+            <Dropdown
+              overlay={dropdownList}
+              placement="bottomRight"
+              trigger={['click']}
+            >
               <Icon type="setting" />
             </Dropdown>
           </STOptionsIcon>
@@ -121,4 +127,6 @@ const mapStateToProps = ({ auth }: IGlobalStore) => ({
   userData: auth.userData
 });
 
-export default withRouter(connect<any, any, any>(mapStateToProps, { logout })(AppHeader));
+export default withRouter(
+  connect<any, any, any>(mapStateToProps, { logout })(AppHeader)
+);
