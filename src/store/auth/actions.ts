@@ -13,7 +13,6 @@ export const doGoogleAuthCallback = (code: string) => {
         data
       }: AxiosResponse<IUserData> = await Auth.doGoogleAuthCallback(code);
       dispatch({ type: SET_USER_DATA, payload: data });
-      console.log(data);
 
       return data;
     } catch (error) {
@@ -27,7 +26,6 @@ export const getProfile = () => {
     try {
       const { data }: AxiosResponse<IUserData> = await Auth.getProfile();
       dispatch({ type: SET_USER_DATA, payload: data });
-      console.log(data);
 
       return data;
     } catch (error) {

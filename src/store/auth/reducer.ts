@@ -4,7 +4,8 @@ import { SET_USER_DATA, LOGOUT } from './constants';
 const initialState: IAuthState = {
   userData: {
     displayName: '',
-    googleId: ''
+    googleId: '',
+    userId: ''
   }
 };
 
