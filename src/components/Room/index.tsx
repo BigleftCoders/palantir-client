@@ -1,10 +1,17 @@
 import * as React from 'react';
-// import styled from 'types/styled-components';
+import styled from 'types/styled-components';
 import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
+// import { Button } from 'antd';
 
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
+import RoomInfo from 'components/modals/RoomInfo';
+import {
+  STRoomsActions,
+  STRoomsActionsWrap,
+  STActionButton
+} from 'components/common/styled';
 
 // store
 import { getRoomData } from 'store/Rooms/actions';
@@ -62,6 +69,7 @@ class Room extends React.Component<IProps, IState> {
       this.setState({ messages: newArr });
     });
   }
+
   componentWillUnmount() {
     if (this.state.socket) {
       this.state.socket.emit('close');
@@ -89,14 +97,20 @@ class Room extends React.Component<IProps, IState> {
   render() {
     const { roomData } = this.props;
     const { isLoadingRoomData } = this.state;
-    const { roomName, description } = roomData;
+    const { roomName } = roomData;
     const serverErrorMessage = <p>{this.state.serverError}</p>;
+
     return (
-      <div>
-        <LoadingSpinner isLoading={isLoadingRoomData} alignOnCenter>
-          {this.state.serverError && serverErrorMessage}
-          <p>{roomName}</p>
-          <p>{description}</p>
+      <LoadingSpinner isLoading={isLoadingRoomData} alignOnCenter>
+        {this.state.serverError && serverErrorMessage}
+        <STRoomsActions>
+          <STTitleWrapp>
+            <RoomInfo roomData={roomData} />
+            <STRoomTitle>{roomName}</STRoomTitle>
+          </STTitleWrapp>
+          <STRoomsActionsWrap>
+            <STActionButton type="primary" ghost icon="share-alt" />
+          </STRoomsActionsWrap>
           <input
             type="text"
             onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) =>
@@ -106,11 +120,28 @@ class Room extends React.Component<IProps, IState> {
           {this.state.messages.map((message: string, i: number) => {
             return <p key={i}>{message}</p>;
           })}
-        </LoadingSpinner>
-      </div>
+        </STRoomsActions>
+      </LoadingSpinner>
     );
   }
 }
+
+const STTitleWrapp = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+`;
+
+const STRoomTitle = styled.h2`
+  max-width: 600px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 18px;
+  font-weight: 600;
+  color: #212121;
+`;
 
 const mapStateToProps = ({ rooms, auth }: IGlobalStore) => ({
   roomData: rooms.roomData,

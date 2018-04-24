@@ -26,7 +26,7 @@ class App extends React.Component<IProps> {
     try {
       const profile = await getProfile();
 
-      if (profile && pathname !== '/') {
+      if (profile && pathname === '/login') {
         history.push('/');
       }
     } catch (error) {

@@ -2,6 +2,7 @@ import { IAuthState } from './types';
 import { SET_USER_DATA, LOGOUT } from './constants';
 
 const initialState: IAuthState = {
+  isUserLoaded: false,
   userData: {
     displayName: '',
     googleId: '',
@@ -14,11 +15,13 @@ export default function auth(state = initialState, { type, payload }: any) {
     case SET_USER_DATA:
       return {
         ...state,
+        isUserLoaded: true,
         userData: payload
       };
     case LOGOUT:
       return {
         ...state,
+        isUserLoaded: false,
         userData: {
           displayName: '',
           googleId: ''

@@ -8,7 +8,11 @@ import { List, Avatar } from 'antd';
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import CreateRoom from 'components/modals/CreateRoom';
-import { STActionButton } from 'components/common/styled';
+import {
+  STRoomsActions,
+  STRoomsActionsWrap,
+  STActionButton
+} from 'components/common/styled';
 
 // store
 import { fetchRooms } from 'store/Rooms/actions';
@@ -75,7 +79,9 @@ class HomeScreen extends React.Component<IProps, IState> {
                       title={<Link to={linkToRoom}>{roomName}</Link>}
                       description={
                         description && (
-                          <STRoomLink to={linkToRoom}>{description}</STRoomLink>
+                          <STRoomLink to={linkToRoom}>
+                            <STDescritWrapp>{description}</STDescritWrapp>
+                          </STRoomLink>
                         )
                       }
                     />
@@ -89,22 +95,6 @@ class HomeScreen extends React.Component<IProps, IState> {
     );
   }
 }
-
-const STRoomsActions = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 25px;
-`;
-
-const STRoomsActionsWrap = styled.div`
-  display: flex;
-  flex-direction: row;
-  > button:last-child {
-    margin-right: 0;
-  }
-`;
 
 const STListWrap = styled.div`
   height: calc(100vh - 130px);
@@ -121,6 +111,15 @@ const STListDescrip = styled.h4`
 const STRoomLink = styled(Link)`
   text-decoration: none;
   color: #9e9e9e;
+`;
+
+const STDescritWrapp = styled.p`
+  display: inline-block;
+  vertical-align: top;
+  max-width: 600px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const mapStateToProps = ({ rooms }: IGlobalStore) => ({

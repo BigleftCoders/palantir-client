@@ -5,5 +5,6 @@ export interface IUserData {
 }
 
 export interface IAuthState {
+  isUserLoaded: boolean;
   userData: IUserData;
 }
