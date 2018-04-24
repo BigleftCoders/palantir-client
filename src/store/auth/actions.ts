@@ -35,7 +35,7 @@ export const getProfile = () => {
 };
 
 export const logout = () => {
-  return async (dispatch: any) => {
+  return async (dispatch: Dispatch<any>) => {
     try {
       await Auth.logout();
       dispatch({ type: LOGOUT });

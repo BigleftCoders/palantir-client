@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'types/styled-components';
 import { Spin } from 'antd';
 
-export interface ILoadingSpinnerProps {
+interface ILoadingSpinnerProps {
   isLoading: boolean;
   spinnerSize?: 'default' | 'small' | 'large' | undefined;
   alignOnCenter?: boolean;
@@ -29,7 +29,8 @@ const LoadingSpinner: React.SFC<ILoadingSpinnerProps> = ({
 const STSpinnerWrap = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: ${({ alignOnCenter }: any) => (alignOnCenter ? 'center' : 'flex-start')};
+  justify-content: ${({ alignOnCenter }: any) =>
+    alignOnCenter ? 'center' : 'flex-start'};
 ` as any;
 
 export default LoadingSpinner;
