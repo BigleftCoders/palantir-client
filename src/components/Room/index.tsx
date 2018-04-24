@@ -25,13 +25,15 @@ interface IState {
   isLoadingRoomData: boolean;
   serverError: string;
   socket: SocketIOClient.Emitter | null;
+  messages: string[];
 }
 
 class Room extends React.Component<IProps, IState> {
   state: IState = {
     isLoadingRoomData: true,
     serverError: '',
-    socket: null
+    socket: null,
+    messages: ['kek']
   };
 
   componentDidMount() {
@@ -51,7 +53,14 @@ class Room extends React.Component<IProps, IState> {
     socket.on('serverError', (error: string): void =>
       this.setState({ serverError: error })
     );
-    socket.on('joined', (data: any) => console.log('JOINED', data));
+    // socket.on('joined', (data: any) => console.log('JOINED', data));
+    socket.on('updateChat', (data: string) => {
+      console.log('updateChat event', data);
+      debugger;
+      const newArr = this.state.messages.slice();
+      newArr.push(data);
+      this.setState({ messages: newArr });
+    });
   }
   componentWillUnmount() {
     if (this.state.socket) {
@@ -59,11 +68,22 @@ class Room extends React.Component<IProps, IState> {
     }
   }
 
+  sendMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (this.state.socket && event.keyCode === 13) {
+      console.log(event.currentTarget.value);
+      const text: string = event.currentTarget.value;
+      this.state.socket.emit('newMessage', text);
+    }
+  };
   getRoomData = async () => {
-    const { getRoomData, match } = this.props;
-    const { id } = match.params;
-    await getRoomData(id);
-    this.setState({ isLoadingRoomData: false });
+    try {
+      const { getRoomData, match } = this.props;
+      const { id } = match.params;
+      await getRoomData(id);
+      this.setState({ isLoadingRoomData: false });
+    } catch (error) {
+      throw error;
+    }
   };
 
   render() {
@@ -77,6 +97,15 @@ class Room extends React.Component<IProps, IState> {
           {this.state.serverError && serverErrorMessage}
           <p>{roomName}</p>
           <p>{description}</p>
+          <input
+            type="text"
+            onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) =>
+              this.sendMessage(e)
+            }
+          />
+          {this.state.messages.map((message: string, i: number) => {
+            return <p key={i}>{message}</p>;
+          })}
         </LoadingSpinner>
       </div>
     );
