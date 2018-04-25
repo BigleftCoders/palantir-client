@@ -31,8 +31,13 @@ interface IProps extends RouteComponentProps<any> {
 interface IState {
   isLoadingRoomData: boolean;
   serverError: string;
-  socket: SocketIOClient.Emitter | null;
-  messages: string[];
+  socket: SocketIOClient.Socket | null;
+  messages: IMessage[];
+}
+interface IMessage {
+  createdAt: number;
+  userName: string;
+  message: string;
 }
 
 class Room extends React.Component<IProps, IState> {
@@ -40,7 +45,9 @@ class Room extends React.Component<IProps, IState> {
     isLoadingRoomData: true,
     serverError: '',
     socket: null,
-    messages: ['kek']
+    messages: [
+      { createdAt: 32313123, userName: 'System Jopa', message: ' hello' }
+    ]
   };
 
   componentDidMount() {
@@ -61,9 +68,8 @@ class Room extends React.Component<IProps, IState> {
       this.setState({ serverError: error })
     );
     // socket.on('joined', (data: any) => console.log('JOINED', data));
-    socket.on('updateChat', (data: string) => {
+    socket.on('updateChat', (data: IMessage) => {
       console.log('updateChat event', data);
-      debugger;
       const newArr = this.state.messages.slice();
       newArr.push(data);
       this.setState({ messages: newArr });
@@ -73,12 +79,12 @@ class Room extends React.Component<IProps, IState> {
   componentWillUnmount() {
     if (this.state.socket) {
       this.state.socket.emit('close');
+      this.state.socket.close();
     }
   }
 
   sendMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (this.state.socket && event.keyCode === 13) {
-      console.log(event.currentTarget.value);
       const text: string = event.currentTarget.value;
       this.state.socket.emit('newMessage', text);
     }
@@ -111,16 +117,22 @@ class Room extends React.Component<IProps, IState> {
           <STRoomsActionsWrap>
             <STActionButton type="primary" ghost icon="share-alt" />
           </STRoomsActionsWrap>
-          <input
-            type="text"
-            onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) =>
-              this.sendMessage(e)
-            }
-          />
-          {this.state.messages.map((message: string, i: number) => {
-            return <p key={i}>{message}</p>;
-          })}
         </STRoomsActions>
+        <input
+          type="text"
+          onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) =>
+            this.sendMessage(e)
+          }
+        />
+        {this.state.messages.map((data: IMessage, i: number) => {
+          return (
+            <p key={i}>
+              <span>{data.userName}</span>
+              <br />
+              <span>{data.message}</span>
+            </p>
+          );
+        })}
       </LoadingSpinner>
     );
   }
