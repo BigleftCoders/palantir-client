@@ -12,6 +12,7 @@ import {
   STRoomsActionsWrap,
   STActionButton
 } from 'components/common/styled';
+import MapContainer from './MapContainer';
 
 // store
 import { getRoomData } from 'store/Rooms/actions';
@@ -118,6 +119,7 @@ class Room extends React.Component<IProps, IState> {
             <STActionButton type="primary" ghost icon="share-alt" />
           </STRoomsActionsWrap>
         </STRoomsActions>
+        <MapContainer />
         <input
           type="text"
           onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) =>
