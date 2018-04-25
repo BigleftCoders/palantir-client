@@ -12,21 +12,19 @@ const MapContainer: React.SFC<any> = () => (
   <UsersMap
     googleMapURL={GOOGLE_MAPS_LINK}
     loadingElement={
-      <STMapWrapp>
+      <STMapContainer>
         <Spin />
-      </STMapWrapp>
+      </STMapContainer>
     }
     containerElement={<STMapContainer />}
     mapElement={<div style={{ height: `100%` }} />}
   />
 );
 
-const STMapWrapp = styled.div`
-  height: 100%;
-`;
-
 const STMapContainer = styled.div`
+  position: relative;
   height: 400px;
+  margin-bottom: 50px;
 `;
 
 export default MapContainer;

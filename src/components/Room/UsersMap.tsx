@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled from 'types/styled-components';
 import {
   withScriptjs,
   withGoogleMap,
@@ -6,11 +7,14 @@ import {
   Marker
 } from 'react-google-maps';
 
+// components
+import LoadingSpinner from 'components/common/LoadingSpinner';
+
 interface IState {
   geolocation: {
     lat: number;
     lng: number;
-  };
+  } | null;
 }
 
 interface IPosition {
@@ -24,10 +28,7 @@ interface IPosition {
 
 class UsersMap extends React.Component<any, IState> {
   state = {
-    geolocation: {
-      lat: 0,
-      lng: 0
-    }
+    geolocation: null
   };
 
   ownerGeowatchId: number = 0;
@@ -62,15 +63,35 @@ class UsersMap extends React.Component<any, IState> {
 
   render() {
     const { geolocation } = this.state;
+    const isLoadingGeo = !geolocation;
+
+    if (isLoadingGeo) {
+      return (
+        <STLoaderWrapp>
+          <LoadingSpinner isLoading alignOnCenter spinnerSize="large" />
+        </STLoaderWrapp>
+      );
+    }
 
     return (
       <div>
-        <GoogleMap defaultZoom={8} defaultCenter={geolocation}>
+        <GoogleMap defaultZoom={12} defaultCenter={geolocation}>
           <Marker position={geolocation} />
         </GoogleMap>
       </div>
     );
   }
 }
+
+const STLoaderWrapp = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
 
 export default withScriptjs(withGoogleMap(UsersMap));
