@@ -50,36 +50,42 @@ class Room extends React.Component<IProps, IState> {
     ]
   };
 
-  componentDidMount() {
-    this.getRoomData();
-    console.log('IO connected');
+  async componentDidMount() {
+    try {
+      await this.getRoomData();
+      console.log('IO connected');
 
-    const socket = io('http://localhost:1337/chat');
-    this.setState({ socket });
-    socket.on('connect', (): void => {
-      console.log('DATA');
-      socket.emit('joinRoom', {
-        roomId: this.props.roomData.roomId,
-        userId: this.props.userData.userId
+      const socket = io('http://localhost:1337/chat', {
+        forceNew: false
       });
-    });
-    socket.on('message', (message: any): void => console.log(message));
-    socket.on('serverError', (error: string): void =>
-      this.setState({ serverError: error })
-    );
-    // socket.on('joined', (data: any) => console.log('JOINED', data));
-    socket.on('updateChat', (data: IMessage) => {
-      console.log('updateChat event', data);
-      const newArr = this.state.messages.slice();
-      newArr.push(data);
-      this.setState({ messages: newArr });
-    });
+      this.setState({ socket });
+      socket.on('connect', (): void => {
+        console.log('DATA', this.props.roomData);
+        socket.emit('joinRoom', {
+          roomId: this.props.roomData.roomId,
+          userId: this.props.userData.userId
+        });
+      });
+      // window.onbeforeunload = () => socket.close();
+      socket.on('message', (message: any): void => console.log(message));
+      socket.on('serverError', (error: string): void =>
+        this.setState({ serverError: error })
+      );
+      // socket.on('joined', (data: any) => console.log('JOINED', data));
+      socket.on('updateChat', (data: IMessage) => {
+        console.log('updateChat event', data);
+        const newArr = this.state.messages.slice();
+        newArr.push(data);
+        this.setState({ messages: newArr });
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   componentWillUnmount() {
     if (this.state.socket) {
       this.state.socket.emit('close');
-      this.state.socket.close();
     }
   }
 
