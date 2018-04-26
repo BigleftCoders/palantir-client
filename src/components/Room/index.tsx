@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'types/styled-components';
 import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
-// import { Button } from 'antd';
+import { Collapse } from 'antd';
 
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
@@ -119,7 +119,13 @@ class Room extends React.Component<IProps, IState> {
             <STActionButton type="primary" ghost icon="share-alt" />
           </STRoomsActionsWrap>
         </STRoomsActions>
-        <MapContainer />
+
+        <Collapse bordered={false} defaultActiveKey={['1']}>
+          <Collapse.Panel header="Map" key="1">
+            <MapContainer />
+          </Collapse.Panel>
+        </Collapse>
+
         <input
           type="text"
           onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) =>

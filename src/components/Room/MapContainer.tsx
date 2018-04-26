@@ -13,13 +13,23 @@ const MapContainer: React.SFC<any> = () => (
     googleMapURL={GOOGLE_MAPS_LINK}
     loadingElement={
       <STMapContainer>
-        <Spin />
+        <STMapSpinnerWrapp>
+          <Spin size="large" />
+        </STMapSpinnerWrapp>
       </STMapContainer>
     }
     containerElement={<STMapContainer />}
     mapElement={<div style={{ height: `100%` }} />}
   />
 );
+
+const STMapSpinnerWrapp = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
 
 const STMapContainer = styled.div`
   position: relative;
