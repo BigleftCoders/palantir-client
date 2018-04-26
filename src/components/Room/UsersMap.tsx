@@ -26,6 +26,11 @@ interface IPosition {
   timestamp: number;
 }
 
+interface IPositionError {
+  code: number;
+  message: string;
+}
+
 class UsersMap extends React.Component<any, IState> {
   state = {
     geolocation: null
@@ -57,8 +62,8 @@ class UsersMap extends React.Component<any, IState> {
     this.setState({ geolocation: { lat: latitude, lng: longitude } });
   };
 
-  handleOwnerPositionError = (err: any) => {
-    console.warn('ERROR(' + err.code + '): ' + err.message);
+  handleOwnerPositionError = (err: IPositionError) => {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
   };
 
   render() {

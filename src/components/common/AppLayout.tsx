@@ -37,6 +37,7 @@ class AppLayout extends React.Component<IProps, any> {
 
 const STAppWrapper = styled.div`
   width: 1000px;
+  min-height: 100%;
   margin: 0 auto;
 `;
 
