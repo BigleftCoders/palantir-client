@@ -52,7 +52,7 @@ class HomeScreen extends React.Component<IProps, IState> {
 
     return (
       <div>
-        <STRoomsActions>
+        <STRoomsActions hasBottomMargin>
           <STListDescrip>Joined rooms</STListDescrip>
           <STRoomsActionsWrap>
             <CreateRoom />

@@ -34,7 +34,6 @@ const STMapSpinnerWrapp = styled.div`
 const STMapContainer = styled.div`
   position: relative;
   height: 400px;
-  margin-bottom: 50px;
 `;
 
 export default MapContainer;

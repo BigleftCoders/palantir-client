@@ -6,8 +6,9 @@ export const STRoomsActions = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 25px;
-`;
+  margin-bottom: ${({ hasBottomMargin }: any) =>
+    hasBottomMargin ? '25px' : '10px'};
+` as any;
 
 export const STRoomsActionsWrap = styled.div`
   display: flex;

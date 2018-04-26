@@ -126,11 +126,13 @@ class Room extends React.Component<IProps, IState> {
           </STRoomsActionsWrap>
         </STRoomsActions>
 
-        <Collapse bordered={false} defaultActiveKey={['1']}>
-          <Collapse.Panel header="Map" key="1">
-            <MapContainer />
-          </Collapse.Panel>
-        </Collapse>
+        <STCollapserWrapp>
+          <Collapse bordered={false} defaultActiveKey={['1']}>
+            <Collapse.Panel header="Map" key="1">
+              <MapContainer />
+            </Collapse.Panel>
+          </Collapse>
+        </STCollapserWrapp>
 
         <input
           type="text"
@@ -167,6 +169,24 @@ const STRoomTitle = styled.h2`
   font-size: 18px;
   font-weight: 600;
   color: #212121;
+`;
+
+const STCollapserWrapp = styled.div`
+  margin-bottom: 50px;
+
+  .ant-collapse-header {
+    padding-left: 33px !important;
+    .arrow {
+      left: 6px !important;
+    }
+  }
+  .ant-collapse-content {
+    padding: 0 !important;
+    border-radius: 0 !important;
+    .ant-collapse-content-box {
+      padding: 0 !important;
+    }
+  }
 `;
 
 const mapStateToProps = ({ rooms, auth }: IGlobalStore) => ({
