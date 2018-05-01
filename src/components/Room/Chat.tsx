@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'types/styled-components';
 import io from 'socket.io-client';
+import format from 'date-fns/format';
 
 // components
 import ChatInput from './ChatInput';
@@ -51,8 +52,9 @@ class Chat extends React.Component<IProps, IState> {
       );
 
       // socket.on('joined', (data: any) => console.log('JOINED', data));
-      this.socket.on('updateChat', (data: IMessage) => {
+      this.socket.on('updateChat', (data: IMessage | any) => {
         console.log('updateChat event', data);
+        if (data === 'SERVER') return;
 
         const newArr: IMessage[] = this.state.messages.slice();
         newArr.push(data);
@@ -79,7 +81,7 @@ class Chat extends React.Component<IProps, IState> {
   };
 
   render() {
-    const { serverError } = this.state;
+    const { serverError, messages } = this.state;
 
     return (
       <STChatGroup>
@@ -88,16 +90,17 @@ class Chat extends React.Component<IProps, IState> {
         <STChatMessages
           innerRef={(messagesBox: any) => (this.messagesBox = messagesBox)}
         >
-          {this.state.messages.map(
-            ({ userName, message, createdAt }: IMessage) => {
-              return (
-                <STChatMessageItem key={createdAt}>
-                  <p>{userName}</p>
-                  <p>{message}</p>
-                </STChatMessageItem>
-              );
-            }
-          )}
+          {messages.map(({ userName, message, createdAt }: IMessage) => {
+            return (
+              <STChatMessageItem key={createdAt}>
+                <STMessageItemHeader>
+                  <span>{userName}</span>
+                  <span>{format(createdAt, 'HH:mm')}</span>
+                </STMessageItemHeader>
+                <p>{message}</p>
+              </STChatMessageItem>
+            );
+          })}
         </STChatMessages>
 
         <ChatInput onMessageSend={this.sendMessage} />
@@ -124,6 +127,12 @@ const STChatMessages = styled.div`
 
 const STChatMessageItem = styled.div`
   margin-bottom: 10px;
+`;
+
+const STMessageItemHeader = styled.p`
+  span:first-child {
+    margin-right: 6px;
+  }
 `;
 
 export default Chat;
