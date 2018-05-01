@@ -23,7 +23,7 @@ class RoomInfo extends React.Component<IProps, IState> {
   };
 
   render() {
-    const { roomName, description } = this.props.roomData;
+    const { roomName, description, users } = this.props.roomData;
     const { isVisible } = this.state;
 
     return (
@@ -53,10 +53,13 @@ class RoomInfo extends React.Component<IProps, IState> {
           <STRoomName>{roomName}</STRoomName>
           <STDescription>{description}</STDescription>
           <STMembersBox>
-            <p>
+            <div>
               <STMembersIcon type="user" />
               <STBoldText>Members:</STBoldText>
-            </p>
+              {users.map(({ displayName, _id }) => (
+                <p key={_id}>{displayName}</p>
+              ))}
+            </div>
           </STMembersBox>
         </Modal>
       </div>

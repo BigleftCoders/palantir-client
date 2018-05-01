@@ -8,6 +8,7 @@ export interface IRoom {
   roomName: string;
   description?: string;
   roomId: number;
+  users: IUserItem[];
 }
 
 export interface IRoomData {
@@ -22,6 +23,11 @@ export interface IMessage {
   createdAt: number;
   userName: string;
   message: string;
+}
+
+export interface IUserItem {
+  displayName: string;
+  _id: string;
 }
 
 // interface ICreatedBy {

@@ -1,7 +1,9 @@
 import * as React from 'react';
 import styled from 'types/styled-components';
 import io from 'socket.io-client';
-import { Input, Button } from 'antd';
+
+// components
+import ChatInput from './ChatInput';
 
 // types
 import { IMessage } from 'store/Rooms/types';
@@ -17,7 +19,7 @@ interface IState {
 }
 
 class Chat extends React.Component<IProps, IState> {
-  state: IState = {
+  state = {
     serverError: '',
     messages: []
   };
@@ -51,8 +53,10 @@ class Chat extends React.Component<IProps, IState> {
       // socket.on('joined', (data: any) => console.log('JOINED', data));
       this.socket.on('updateChat', (data: IMessage) => {
         console.log('updateChat event', data);
-        const newArr = this.state.messages.slice();
+
+        const newArr: IMessage[] = this.state.messages.slice();
         newArr.push(data);
+
         this.setState({ messages: newArr }, () => {
           this.messagesBox.scrollTop = this.messagesBox.scrollHeight;
         });
@@ -68,10 +72,9 @@ class Chat extends React.Component<IProps, IState> {
     }
   }
 
-  sendMessage = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  sendMessage = (messageText: string) => {
     if (this.socket) {
-      const text: string = event.currentTarget.value;
-      this.socket.emit('newMessage', text);
+      this.socket.emit('newMessage', messageText);
     }
   };
 
@@ -85,23 +88,19 @@ class Chat extends React.Component<IProps, IState> {
         <STChatMessages
           innerRef={(messagesBox: any) => (this.messagesBox = messagesBox)}
         >
-          {this.state.messages.map((data: IMessage, i: number) => {
-            return (
-              <p key={i}>
-                <span>{data.userName}</span>
-                <br />
-                <span>{data.message}</span>
-              </p>
-            );
-          })}
+          {this.state.messages.map(
+            ({ userName, message, createdAt }: IMessage) => {
+              return (
+                <STChatMessageItem key={createdAt}>
+                  <p>{userName}</p>
+                  <p>{message}</p>
+                </STChatMessageItem>
+              );
+            }
+          )}
         </STChatMessages>
 
-        <STChatInputWrapp>
-          <Input
-            onPressEnter={this.sendMessage}
-            suffix={<Button type="primary" icon="enter" />}
-          />
-        </STChatInputWrapp>
+        <ChatInput onMessageSend={this.sendMessage} />
       </STChatGroup>
     );
   }
@@ -123,16 +122,8 @@ const STChatMessages = styled.div`
   overflow-y: auto;
 `;
 
-const STChatInputWrapp = styled.div`
-  width: 100%;
-
-  .ant-input-affix-wrapper .ant-input-suffix {
-    right: 0 !important;
-    .ant-btn {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-  }
+const STChatMessageItem = styled.div`
+  margin-bottom: 10px;
 `;
 
 export default Chat;
