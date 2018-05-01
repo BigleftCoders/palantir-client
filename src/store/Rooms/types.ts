@@ -19,11 +19,11 @@ export interface IRoomData {
 }
 
 export interface IMessage {
-  date: string;
-  value: string;
-  createdBy: ICreatedBy;
+  createdAt: number;
+  userName: string;
+  message: string;
 }
 
-interface ICreatedBy {
-  userId: number;
-}
+// interface ICreatedBy {
+//   userId: number;
+// }
