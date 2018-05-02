@@ -31,11 +31,13 @@ interface IProps extends RouteComponentProps<any> {
 
 interface IState {
   isLoadingRoomData: boolean;
+  socket: SocketIOClient.Socket | null;
 }
 
 class Room extends React.Component<IProps, IState> {
   state = {
-    isLoadingRoomData: true
+    isLoadingRoomData: true,
+    socket: null
   };
 
   componentDidMount() {
