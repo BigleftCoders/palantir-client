@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'types/styled-components';
 import io from 'socket.io-client';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 
 // components
 import ChatInput from './ChatInput';
@@ -29,9 +29,11 @@ class Chat extends React.Component<IProps, IState> {
     forceNew: false
   });
 
-  messagesBox: any = null;
+  messagesBox: HTMLDivElement | any = null;
 
-  async componentDidMount() {
+  inputRef: HTMLInputElement | any = React.createRef();
+
+  componentDidMount() {
     try {
       console.log('IO connected');
 
@@ -59,8 +61,14 @@ class Chat extends React.Component<IProps, IState> {
         const newArr: IMessage[] = this.state.messages.slice();
         newArr.push(data);
 
+        const isNeedToScrollDown =
+          this.messagesBox.scrollHeight - this.messagesBox.scrollTop ===
+          this.messagesBox.clientHeight;
+
         this.setState({ messages: newArr }, () => {
-          this.messagesBox.scrollTop = this.messagesBox.scrollHeight;
+          if (isNeedToScrollDown) {
+            this.messagesBox.scrollTop = this.messagesBox.scrollHeight;
+          }
         });
       });
     } catch (error) {
@@ -75,9 +83,11 @@ class Chat extends React.Component<IProps, IState> {
   }
 
   sendMessage = (messageText: string) => {
-    if (this.socket) {
+    const isMessageEmpty = messageText === '';
+    if (this.socket && !isMessageEmpty) {
       this.socket.emit('newMessage', messageText);
     }
+    this.inputRef.current.focus();
   };
 
   render() {
@@ -94,8 +104,10 @@ class Chat extends React.Component<IProps, IState> {
             return (
               <STChatMessageItem key={createdAt}>
                 <STMessageItemHeader>
-                  <span>{userName}</span>
-                  <span>{format(createdAt, 'HH:mm')}</span>
+                  <STMessageItemUserName>{userName}</STMessageItemUserName>
+                  <STMessageItemTime>
+                    {format(createdAt, 'HH:mm')}
+                  </STMessageItemTime>
                 </STMessageItemHeader>
                 <p>{message}</p>
               </STChatMessageItem>
@@ -103,7 +115,7 @@ class Chat extends React.Component<IProps, IState> {
           })}
         </STChatMessages>
 
-        <ChatInput onMessageSend={this.sendMessage} />
+        <ChatInput onMessageSend={this.sendMessage} ref={this.inputRef} />
       </STChatGroup>
     );
   }
@@ -115,6 +127,7 @@ const STChatGroup = styled.div`
   align-items: flex-start;
   flex-grow: 1;
   padding-bottom: 20px;
+  overflow: hidden;
 `;
 
 const STChatMessages = styled.div`
@@ -133,6 +146,14 @@ const STMessageItemHeader = styled.p`
   span:first-child {
     margin-right: 6px;
   }
+`;
+
+const STMessageItemUserName = styled.span`
+  font-weight: 600;
+`;
+
+const STMessageItemTime = styled.span`
+  color: #9e9e9e;
 `;
 
 export default Chat;

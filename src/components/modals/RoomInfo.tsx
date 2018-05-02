@@ -54,10 +54,12 @@ class RoomInfo extends React.Component<IProps, IState> {
           <STDescription>{description}</STDescription>
           <STMembersBox>
             <div>
-              <STMembersIcon type="user" />
-              <STBoldText>Members:</STBoldText>
+              <STMembersHeader>
+                <STMembersIcon type="user" />
+                <STBoldText>Members:</STBoldText>
+              </STMembersHeader>
               {users.map(({ displayName, _id }) => (
-                <p key={_id}>{displayName}</p>
+                <STMemberItem key={_id}>{displayName}</STMemberItem>
               ))}
             </div>
           </STMembersBox>
@@ -92,6 +94,14 @@ const STMembersBox = styled.div`
 const STMembersIcon = styled(Icon)`
   font-size: 16px !important;
   margin-right: 4px;
+`;
+
+const STMembersHeader = styled.p`
+  margin-bottom: 5px;
+`;
+
+const STMemberItem = styled.p`
+  margin-bottom: 2px;
 `;
 
 export default RoomInfo;

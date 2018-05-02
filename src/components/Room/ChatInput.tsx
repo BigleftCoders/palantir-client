@@ -6,11 +6,15 @@ interface IProps {
   onMessageSend: (messageText: string) => void;
 }
 
+interface IPropsWithRef extends IProps {
+  inputRef: any;
+}
+
 interface IState {
   inputValue: string;
 }
 
-class ChatInput extends React.Component<IProps, IState> {
+class ChatInput extends React.Component<IPropsWithRef, IState> {
   state = {
     inputValue: ''
   };
@@ -27,6 +31,7 @@ class ChatInput extends React.Component<IProps, IState> {
   };
 
   render() {
+    const { inputRef } = this.props;
     const { inputValue } = this.state;
 
     return (
@@ -36,6 +41,7 @@ class ChatInput extends React.Component<IProps, IState> {
           placeholder="Type a message..."
           onChange={this.handleInputChange}
           onPressEnter={this.handleMessageSend}
+          ref={inputRef}
           suffix={
             <Button
               type="primary"
@@ -61,4 +67,6 @@ const STChatInputWrapp = styled.div`
   }
 `;
 
-export default ChatInput;
+export default React.forwardRef((props: IProps, ref) => (
+  <ChatInput {...props} inputRef={ref} />
+));
