@@ -8,8 +8,9 @@ import UsersMap from './UsersMap';
 // constants
 import { GOOGLE_MAPS_LINK } from 'config/constants';
 
-const MapContainer: React.SFC<any> = () => (
+const MapContainer: React.SFC<any> = props => (
   <UsersMap
+    socketInstance={props.socketInstance}
     googleMapURL={GOOGLE_MAPS_LINK}
     loadingElement={
       <STMapContainer>

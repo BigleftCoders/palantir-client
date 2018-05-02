@@ -6,6 +6,7 @@ import {
   GoogleMap,
   Marker
 } from 'react-google-maps';
+import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
 
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
@@ -15,6 +16,10 @@ interface IState {
     lat: number;
     lng: number;
   } | null;
+}
+
+interface IProps {
+  socketInstance: SocketIOClient.Socket;
 }
 
 interface IPosition {
@@ -31,17 +36,28 @@ interface IPositionError {
   message: string;
 }
 
-class UsersMap extends React.Component<any, IState> {
+class UsersMap extends React.Component<IProps, IState> {
   state = {
-    geolocation: null
+    geolocation: null,
+    markers: {},
+    socket: null
   };
 
   ownerGeowatchId: number = 0;
 
+  gmap = React.createRef();
+
+  subscribeOnMapUpdates = (socket: SocketIOClient.Socket) => {
+    socket.on('updateCoordinates', (data: any) => {
+      console.log(data);
+      // const oldMarkers = { ...this.state.markers };
+    });
+  };
+
   componentDidMount() {
     const options = {
       enableHighAccuracy: false,
-      timeout: 5000,
+      timeout: 10000,
       maximumAge: 0
     };
 
@@ -50,6 +66,15 @@ class UsersMap extends React.Component<any, IState> {
       this.handleOwnerPositionError,
       options
     );
+    setTimeout(() => {
+      console.log(this.gmap);
+    }, 3000);
+  }
+  componentWillReceiveProps(nextProps: IProps) {
+    if (nextProps.socketInstance !== this.props.socketInstance) {
+      console.log('has connection');
+      this.subscribeOnMapUpdates(nextProps.socketInstance);
+    }
   }
 
   componentWillUnmount() {
@@ -59,7 +84,13 @@ class UsersMap extends React.Component<any, IState> {
   handleOwnerPositionChange = (pos: IPosition) => {
     console.log(pos);
     const { latitude, longitude } = pos.coords;
+    const socket = this.props.socketInstance;
     this.setState({ geolocation: { lat: latitude, lng: longitude } });
+    console.log(!!this.props.socketInstance);
+    if (socket) {
+      console.log('emmited');
+      this.props.socketInstance.emit('newCoordinates', pos);
+    }
   };
 
   handleOwnerPositionError = (err: IPositionError) => {

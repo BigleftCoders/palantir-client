@@ -139,7 +139,7 @@ class Room extends React.Component<IProps, IState> {
           <STCollapserWrapp>
             <Collapse bordered={false} defaultActiveKey={['1']}>
               <Collapse.Panel header="Map" key="1">
-                <MapContainer />
+                <MapContainer socketInstance={this.state.socket} />
               </Collapse.Panel>
             </Collapse>
           </STCollapserWrapp>
