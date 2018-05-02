@@ -3,7 +3,7 @@ import Rooms from 'api/rooms';
 
 // types
 import { AxiosResponse } from 'axios';
-import { IRoom, IRoomData } from './types';
+import { IRoom } from './types';
 import { Dispatch } from 'redux';
 
 export const fetchRooms = () => {
@@ -20,7 +20,7 @@ export const fetchRooms = () => {
 export const getRoomData = (roomId: number) => {
   return async (dispatch: Dispatch<any>) => {
     try {
-      const { data }: AxiosResponse<IRoomData> = await Rooms.getRoom(roomId);
+      const { data }: AxiosResponse<IRoom> = await Rooms.getRoom(roomId);
       dispatch({ type: GET_ROOM_BY_ID, payload: data });
     } catch (error) {
       throw error;

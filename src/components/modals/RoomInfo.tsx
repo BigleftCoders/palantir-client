@@ -23,7 +23,7 @@ class RoomInfo extends React.Component<IProps, IState> {
   };
 
   render() {
-    const { roomName, description } = this.props.roomData;
+    const { roomName, description, users } = this.props.roomData;
     const { isVisible } = this.state;
 
     return (
@@ -53,10 +53,15 @@ class RoomInfo extends React.Component<IProps, IState> {
           <STRoomName>{roomName}</STRoomName>
           <STDescription>{description}</STDescription>
           <STMembersBox>
-            <p>
-              <STMembersIcon type="user" />
-              <STBoldText>Members:</STBoldText>
-            </p>
+            <div>
+              <STMembersHeader>
+                <STMembersIcon type="user" />
+                <STBoldText>Members:</STBoldText>
+              </STMembersHeader>
+              {users.map(({ displayName, _id }) => (
+                <STMemberItem key={_id}>{displayName}</STMemberItem>
+              ))}
+            </div>
           </STMembersBox>
         </Modal>
       </div>
@@ -89,6 +94,14 @@ const STMembersBox = styled.div`
 const STMembersIcon = styled(Icon)`
   font-size: 16px !important;
   margin-right: 4px;
+`;
+
+const STMembersHeader = styled.p`
+  margin-bottom: 5px;
+`;
+
+const STMemberItem = styled.p`
+  margin-bottom: 2px;
 `;
 
 export default RoomInfo;
