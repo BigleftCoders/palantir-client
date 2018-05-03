@@ -6,7 +6,7 @@ import {
   GoogleMap,
   Marker
 } from 'react-google-maps';
-import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
+// import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
 
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
