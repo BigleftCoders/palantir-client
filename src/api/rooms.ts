@@ -16,6 +16,14 @@ const Rooms = {
 
   getRoom(roomId: number) {
     return axios.get(`/room/${roomId}`);
+  },
+
+  createInvite(roomId: number) {
+    return axios.post('/invite/create', { roomId });
+  },
+
+  verifyInvite(inviteKey: string) {
+    return axios.get(`/invite/verify${inviteKey}`);
   }
 };
 

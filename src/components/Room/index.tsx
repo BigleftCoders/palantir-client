@@ -10,9 +10,10 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 import RoomInfo from 'components/modals/RoomInfo';
 import {
   STRoomsActions,
-  STRoomsActionsWrap,
-  STActionButton
+  STRoomsActionsWrap
+  /* STActionButton */
 } from 'components/common/styled';
+import ShareRoom from 'components/modals/ShareRoom';
 import MapContainer from './MapContainer';
 import Chat from './Chat';
 
@@ -74,7 +75,7 @@ class Room extends React.Component<IProps, IState> {
             <STRoomTitle>{roomName}</STRoomTitle>
           </STTitleWrapp>
           <STRoomsActionsWrap>
-            <STActionButton type="primary" ghost icon="share-alt" />
+            <ShareRoom roomId={roomId} />
           </STRoomsActionsWrap>
         </STRoomsActions>
 
