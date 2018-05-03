@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'types/styled-components';
-import io from 'socket.io-client';
 import { format } from 'date-fns';
 
 // components
@@ -12,6 +11,7 @@ import { IMessage } from 'store/Rooms/types';
 interface IProps {
   roomId: number;
   userId: string;
+  socket: SocketIOClient.Socket;
 }
 
 interface IState {
@@ -25,36 +25,31 @@ class Chat extends React.Component<IProps, IState> {
     messages: []
   };
 
-  socket: SocketIOClient.Socket = io('http://localhost:1337/chat', {
-    forceNew: false
-  });
-
   messagesBox: HTMLDivElement | any = null;
 
   inputRef: HTMLInputElement | any = React.createRef();
 
   componentDidMount() {
     try {
-      console.log('IO connected');
-
-      this.socket.on('connect', (): void => {
-        console.log('CHAT PROPS', this.props);
+      this.props.socket.on('connect', (): void => {
         const { roomId, userId } = this.props;
-        this.socket.emit('joinRoom', {
+        this.props.socket.emit('joinRoom', {
           roomId,
           userId
         });
       });
 
       // window.onbeforeunload = () => socket.close();
-      this.socket.on('message', (message: any): void => console.log(message));
+      this.props.socket.on('message', (message: any): void =>
+        console.log(message)
+      );
 
-      this.socket.on('serverError', (error: string): void =>
+      this.props.socket.on('serverError', (error: string): void =>
         this.setState({ serverError: error })
       );
 
       // socket.on('joined', (data: any) => console.log('JOINED', data));
-      this.socket.on('updateChat', (data: IMessage | any) => {
+      this.props.socket.on('updateChat', (data: IMessage | any) => {
         console.log('updateChat event', data);
         if (data === 'SERVER') return;
 
@@ -77,15 +72,15 @@ class Chat extends React.Component<IProps, IState> {
   }
 
   componentWillUnmount() {
-    if (this.socket) {
-      this.socket.emit('close');
+    if (this.props.socket) {
+      this.props.socket.emit('close');
     }
   }
 
   sendMessage = (messageText: string) => {
     const isMessageEmpty = messageText === '';
-    if (this.socket && !isMessageEmpty) {
-      this.socket.emit('newMessage', messageText);
+    if (this.props.socket && !isMessageEmpty) {
+      this.props.socket.emit('newMessage', messageText);
     }
     this.inputRef.current.focus();
   };

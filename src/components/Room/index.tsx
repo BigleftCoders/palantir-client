@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'types/styled-components';
+import io from 'socket.io-client';
 import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
 import { Collapse } from 'antd';
@@ -31,14 +32,17 @@ interface IProps extends RouteComponentProps<any> {
 
 interface IState {
   isLoadingRoomData: boolean;
-  socket: SocketIOClient.Socket | null;
+  // socket: SocketIOClient.Socket | null;
 }
 
 class Room extends React.Component<IProps, IState> {
   state = {
-    isLoadingRoomData: true,
-    socket: null
+    isLoadingRoomData: true
   };
+
+  socket: SocketIOClient.Socket = io('http://localhost:1337/chat', {
+    forceNew: false
+  });
 
   componentDidMount() {
     this.getRoomData();
@@ -78,12 +82,12 @@ class Room extends React.Component<IProps, IState> {
           <STCollapserWrapp>
             <Collapse bordered={false} defaultActiveKey={['1']}>
               <Collapse.Panel header="Map" key="1">
-                <MapContainer socketInstance={this.state.socket} />
+                <MapContainer socketInstance={this.socket} />
               </Collapse.Panel>
             </Collapse>
           </STCollapserWrapp>
 
-          <Chat roomId={roomId} userId={userId} />
+          <Chat roomId={roomId} socket={this.socket} userId={userId} />
         </STFlexer>
       </LoadingSpinner>
     );

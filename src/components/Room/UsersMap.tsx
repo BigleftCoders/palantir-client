@@ -6,6 +6,7 @@ import {
   GoogleMap,
   Marker
 } from 'react-google-maps';
+
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
@@ -50,6 +51,15 @@ class UsersMap extends React.Component<IProps, IState> {
   subscribeOnMapUpdates = (socket: SocketIOClient.Socket) => {
     socket.on('updateCoordinates', (data: any) => {
       console.log(data);
+      navigator.geolocation.getCurrentPosition(
+        (pos: IPosition) => {
+          debugger;
+        },
+        (err: IPositionError) => {
+          console.log(err);
+        }
+      );
+      // this.handleOwnerPositionChange(this.state.geolocation);
       // const oldMarkers = { ...this.state.markers };
     });
   };
@@ -71,6 +81,7 @@ class UsersMap extends React.Component<IProps, IState> {
     }, 3000);
   }
   componentWillReceiveProps(nextProps: IProps) {
+    debugger;
     if (nextProps.socketInstance !== this.props.socketInstance) {
       console.log('has connection');
       this.subscribeOnMapUpdates(nextProps.socketInstance);
@@ -82,13 +93,11 @@ class UsersMap extends React.Component<IProps, IState> {
   }
 
   handleOwnerPositionChange = (pos: IPosition) => {
-    console.log(pos);
     const { latitude, longitude } = pos.coords;
     const socket = this.props.socketInstance;
     this.setState({ geolocation: { lat: latitude, lng: longitude } });
-    console.log(!!this.props.socketInstance);
     if (socket) {
-      console.log('emmited');
+      // console.log('emmited');
       this.props.socketInstance.emit('newCoordinates', pos);
     }
   };
