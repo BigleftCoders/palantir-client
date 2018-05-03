@@ -6,10 +6,10 @@ import {
   GoogleMap,
   Marker
 } from 'react-google-maps';
-// import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
-
+import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
+import SvgMarker from 'components/Room/SvgMarker';
 
 interface IState {
   geolocation: {
@@ -112,7 +112,20 @@ class UsersMap extends React.Component<IProps, IState> {
     return (
       <div>
         <GoogleMap defaultZoom={12} defaultCenter={geolocation}>
-          <Marker position={geolocation} />
+          <STMarker>
+            {/* <Marker
+              position={geolocation}
+              markerWithLabel={MarkerWithLabel}
+              options={{ labelClass: 'custom-pin' }}
+            />{' '} */}
+            <MarkerWithLabel
+              position={geolocation}
+              labelAnchor={{ x: 21, y: 55 }}
+              options={{ labelClass: 'custom-pin' }}
+            >
+              <SvgMarker color="#13E7C9" name="AD" />
+            </MarkerWithLabel>
+          </STMarker>
         </GoogleMap>
       </div>
     );
@@ -128,6 +141,32 @@ const STLoaderWrapp = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
+`;
+
+const STMarker = styled.div`
+  a[href^='http://maps.google.com/maps'] {
+    display: none !important;
+  }
+
+  a[href^='https://maps.google.com/maps'] {
+    display: none !important;
+  }
+
+  .gmnoprint a,
+  .gmnoprint span,
+  .gm-style-cc,
+  .gm-fullscreen-control {
+    display: none;
+  }
+
+  .gmnoprint div {
+    background: none !important;
+    display: none;
+  }
+
+  .gm-style-iw + div {
+    display: none;
+  }
 `;
 
 export default withScriptjs(withGoogleMap(UsersMap));
