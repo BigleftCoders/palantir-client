@@ -105,8 +105,4 @@ const STMembersHeader = styled.p`
   margin-bottom: 5px;
 `;
 
-const STMemberItem = styled.p`
-  margin-bottom: 2px;
-`;
-
 export default RoomInfo;

@@ -1,20 +1,17 @@
 import * as React from 'react';
 import styled from 'types/styled-components';
-import {
-  withScriptjs,
-  withGoogleMap,
-  GoogleMap
-  // Marker
-} from 'react-google-maps';
+import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps';
 
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
 import { connect } from 'react-redux';
-import { IGlobalStore } from 'store/types';
-import { IUserData } from 'store/Auth/types';
 
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import SvgMarker from 'components/Room/SvgMarker';
+
+// types
+import { IGlobalStore } from 'store/types';
+import { IUserData } from 'store/Auth/types';
 
 interface IState {
   geolocation: {
@@ -37,15 +34,18 @@ interface IPosition {
   };
   timestamp: number;
 }
+
 interface ICoords {
   latitude: number;
   longitude: number;
 }
+
 interface IMarker extends ICoords {
   color: string;
   userId: string;
   displayName: string;
 }
+
 interface IPositionError {
   code: number;
   message: string;
@@ -124,7 +124,6 @@ class UsersMap extends React.Component<IProps, IState> {
 
   handleOwnerPositionChange = (pos: IPosition) => {
     const { latitude, longitude } = pos.coords;
-    const socket = this.props.socketInstance;
     this.setState({ geolocation: { lat: latitude, lng: longitude } });
     this.props.socketInstance.emit('newCoordinates', {
       latitude,
@@ -138,6 +137,12 @@ class UsersMap extends React.Component<IProps, IState> {
   handleOwnerPositionError = (err: IPositionError) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
   };
+
+  formatName = (displayName: string): string =>
+    displayName
+      .split(' ')
+      .map((word: string) => word.replace('(', '')[0].toUpperCase())
+      .join('');
 
   render() {
     const { geolocation } = this.state;
@@ -154,22 +159,23 @@ class UsersMap extends React.Component<IProps, IState> {
     return (
       <div>
         <GoogleMap defaultZoom={12} defaultCenter={geolocation}>
-          {this.state.markers.map((marker: IMarker) => (
-            <STMarker key={marker.userId}>
-              {/* <Marker
-              position={geolocation}
-              markerWithLabel={MarkerWithLabel}
-              options={{ labelClass: 'custom-pin' }}
-            />{' '} */}
-              <MarkerWithLabel
-                position={{ lat: marker.latitude, lng: marker.longitude }}
-                labelAnchor={{ x: 21, y: 55 }}
-                options={{ labelClass: 'custom-pin' }}
-              >
-                <SvgMarker color={marker.color} name={marker.displayName} />
-              </MarkerWithLabel>
-            </STMarker>
-          ))}
+          {this.state.markers.map(
+            ({ userId, latitude, longitude, color, displayName }: IMarker) => {
+              const cuttedName = this.formatName(displayName);
+
+              return (
+                <STMarker key={userId}>
+                  <MarkerWithLabel
+                    position={{ lat: latitude, lng: longitude }}
+                    labelAnchor={{ x: 21, y: 55 }}
+                    options={{ labelClass: 'custom-pin' }}
+                  >
+                    <SvgMarker color={color} name={cuttedName} />
+                  </MarkerWithLabel>
+                </STMarker>
+              );
+            }
+          )}
         </GoogleMap>
       </div>
     );
@@ -212,9 +218,11 @@ const STMarker = styled.div`
     display: none;
   }
 `;
+
 const getPropsFromState = (state: IGlobalStore) => ({
   userData: state.auth.userData
 });
+
 export default withScriptjs(
   withGoogleMap(connect<any, any, any>(getPropsFromState)(UsersMap))
 );
