@@ -38,13 +38,12 @@ class App extends React.Component<IProps> {
         const inviteKey = localStorage.getItem('inviteKey');
 
         if (inviteKey) {
-          this.doInviteVerify(inviteKey);
-          return;
+          return this.doInviteVerify(inviteKey);
         }
 
-        history.push('/');
+        return history.push('/');
       } catch (error) {
-        history.push('/login');
+        return history.push('/login');
       }
     }
 
@@ -53,8 +52,7 @@ class App extends React.Component<IProps> {
       const inviteKey = localStorage.getItem('inviteKey') || urlInviteKey;
 
       if (inviteKey) {
-        this.doInviteVerify(inviteKey);
-        return;
+        return this.doInviteVerify(inviteKey);
       }
 
       if (profile && pathname === '/login') {
