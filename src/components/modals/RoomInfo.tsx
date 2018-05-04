@@ -2,6 +2,9 @@ import * as React from 'react';
 import styled from 'types/styled-components';
 import { Modal, Button, Icon } from 'antd';
 
+// components
+import { STUserNameTitle } from 'components/common/styled';
+
 // types
 import { IRoom } from 'store/Rooms/types';
 
@@ -58,8 +61,10 @@ class RoomInfo extends React.Component<IProps, IState> {
                 <STMembersIcon type="user" />
                 <STBoldText>Members:</STBoldText>
               </STMembersHeader>
-              {users.map(({ displayName, _id }) => (
-                <STMemberItem key={_id}>{displayName}</STMemberItem>
+              {users.map(({ displayName, color, _id }) => (
+                <STUserNameTitle key={_id} userColor={color}>
+                  {displayName}
+                </STUserNameTitle>
               ))}
             </div>
           </STMembersBox>

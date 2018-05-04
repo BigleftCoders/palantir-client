@@ -22,11 +22,12 @@ import { getRoomData } from 'store/Rooms/actions';
 
 // types
 import { IGlobalStore } from 'store/types';
-import { IRoom } from 'store/Rooms/types';
+import { IRoom, IMessage } from 'store/Rooms/types';
 import { IUserData } from 'store/Auth/types';
 
 interface IProps extends RouteComponentProps<any> {
   roomData: IRoom;
+  foundedMessages: IMessage[];
   userData: IUserData;
   getRoomData: (roomId: number) => any;
 }
@@ -62,7 +63,7 @@ class Room extends React.Component<IProps, IState> {
   };
 
   render() {
-    const { roomData, userData } = this.props;
+    const { roomData, foundedMessages, userData } = this.props;
     const { isLoadingRoomData } = this.state;
     const { roomName, roomId } = roomData;
     const { userId } = userData;
@@ -88,7 +89,12 @@ class Room extends React.Component<IProps, IState> {
             </Collapse>
           </STCollapserWrapp>
 
-          <Chat roomId={roomId} socket={this.socket} userId={userId} />
+          <Chat
+            roomId={roomId}
+            socket={this.socket}
+            userId={userId}
+            foundedMessages={foundedMessages}
+          />
         </STFlexer>
       </LoadingSpinner>
     );
@@ -139,6 +145,7 @@ const STCollapserWrapp = styled.div`
 
 const mapStateToProps = ({ rooms, auth }: IGlobalStore) => ({
   roomData: rooms.roomData,
+  foundedMessages: rooms.messages,
   userData: auth.userData
 });
 

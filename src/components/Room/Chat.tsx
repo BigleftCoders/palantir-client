@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 
 // components
 import ChatInput from './ChatInput';
+import { STUserNameTitle } from 'components/common/styled';
 
 // types
 import { IMessage } from 'store/Rooms/types';
@@ -12,6 +13,7 @@ interface IProps {
   roomId: number;
   userId: string;
   socket: SocketIOClient.Socket;
+  foundedMessages: IMessage[];
 }
 
 interface IState {
@@ -22,7 +24,7 @@ interface IState {
 class Chat extends React.Component<IProps, IState> {
   state = {
     serverError: '',
-    messages: []
+    messages: this.props.foundedMessages || []
   };
 
   messagesBox: HTMLDivElement | any = null;
@@ -30,26 +32,39 @@ class Chat extends React.Component<IProps, IState> {
   inputRef: HTMLInputElement | any = React.createRef();
 
   componentDidMount() {
+    this.subscribeToChatSocket();
+    this.messagesBox.scrollTop = this.messagesBox.scrollHeight;
+  }
+
+  componentWillUnmount() {
+    const { socket } = this.props;
+
+    if (socket) {
+      socket.emit('close');
+    }
+  }
+
+  subscribeToChatSocket = () => {
+    const { socket } = this.props;
+
     try {
-      this.props.socket.on('connect', (): void => {
+      socket.on('connect', (): void => {
         const { roomId, userId } = this.props;
-        this.props.socket.emit('joinRoom', {
+        socket.emit('joinRoom', {
           roomId,
           userId
         });
       });
 
       // window.onbeforeunload = () => socket.close();
-      this.props.socket.on('message', (message: any): void =>
-        console.log(message)
-      );
+      socket.on('message', (message: any): void => console.log(message));
 
-      this.props.socket.on('serverError', (error: string): void =>
+      socket.on('serverError', (error: string): void =>
         this.setState({ serverError: error })
       );
 
       // socket.on('joined', (data: any) => console.log('JOINED', data));
-      this.props.socket.on('updateChat', (data: IMessage | any) => {
+      socket.on('updateChat', (data: IMessage | any) => {
         console.log('updateChat event', data);
         if (data === 'SERVER') return;
 
@@ -69,18 +84,14 @@ class Chat extends React.Component<IProps, IState> {
     } catch (error) {
       throw error;
     }
-  }
-
-  componentWillUnmount() {
-    if (this.props.socket) {
-      this.props.socket.emit('close');
-    }
-  }
+  };
 
   sendMessage = (messageText: string) => {
+    const { socket } = this.props;
     const isMessageEmpty = messageText === '';
-    if (this.props.socket && !isMessageEmpty) {
-      this.props.socket.emit('newMessage', messageText);
+
+    if (socket && !isMessageEmpty) {
+      socket.emit('newMessage', messageText);
     }
     this.inputRef.current.focus();
   };
@@ -95,11 +106,13 @@ class Chat extends React.Component<IProps, IState> {
         <STChatMessages
           innerRef={(messagesBox: any) => (this.messagesBox = messagesBox)}
         >
-          {messages.map(({ userName, message, createdAt }: IMessage) => {
+          {messages.map(({ userName, message, createdAt, color }: IMessage) => {
             return (
               <STChatMessageItem key={createdAt}>
                 <STMessageItemHeader>
-                  <STMessageItemUserName>{userName}</STMessageItemUserName>
+                  <STUserNameTitle userColor={color}>
+                    {userName}
+                  </STUserNameTitle>
                   <STMessageItemTime>
                     {format(createdAt, 'HH:mm')}
                   </STMessageItemTime>
@@ -141,10 +154,6 @@ const STMessageItemHeader = styled.p`
   span:first-child {
     margin-right: 6px;
   }
-`;
-
-const STMessageItemUserName = styled.span`
-  font-weight: 600;
 `;
 
 const STMessageItemTime = styled.span`

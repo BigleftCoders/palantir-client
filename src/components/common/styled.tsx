@@ -23,3 +23,8 @@ export const STActionButton = styled(Button)`
   font-size: 18px !important;
   margin-right: 15px;
 `;
+
+export const STUserNameTitle = styled.span`
+  color: ${({ userColor }: any) => userColor};
+  font-weight: 600;
+` as any;

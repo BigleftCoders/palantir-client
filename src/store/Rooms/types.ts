@@ -23,10 +23,13 @@ export interface IMessage {
   createdAt: number;
   userName: string;
   message: string;
+  userId: string;
+  color: string;
 }
 
 export interface IUserItem {
   displayName: string;
+  color: string;
   _id: string;
 }
 
