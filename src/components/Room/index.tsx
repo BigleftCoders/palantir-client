@@ -43,7 +43,7 @@ class Room extends React.Component<IProps, IState> {
   };
 
   socket: SocketIOClient.Socket = io('http://localhost:1337/chat', {
-    forceNew: false
+    forceNew: true
   });
 
   componentDidMount() {

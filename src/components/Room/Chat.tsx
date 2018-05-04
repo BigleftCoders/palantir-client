@@ -32,8 +32,12 @@ class Chat extends React.Component<IProps, IState> {
   inputRef: HTMLInputElement | any = React.createRef();
 
   componentDidMount() {
+    console.log('cdm', this.props.socket);
     this.subscribeToChatSocket();
     this.messagesBox.scrollTop = this.messagesBox.scrollHeight;
+  }
+  componentWillReceiveProps(nextProps: IProps) {
+    console.log('cwrp', this.props.socket, nextProps.socket);
   }
 
   componentWillUnmount() {
@@ -45,15 +49,19 @@ class Chat extends React.Component<IProps, IState> {
   }
 
   subscribeToChatSocket = () => {
-    const { socket } = this.props;
-
     try {
+      const { socket } = this.props;
+      console.log('subscribe', socket);
       socket.on('connect', (): void => {
         const { roomId, userId } = this.props;
+        console.log('joinRoom', roomId, userId);
         socket.emit('joinRoom', {
           roomId,
           userId
         });
+      });
+      socket.on('error', (data: never) => {
+        console.error('error', data);
       });
 
       // window.onbeforeunload = () => socket.close();
