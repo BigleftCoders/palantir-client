@@ -7,5 +7,6 @@ export interface IUserData {
 
 export interface IAuthState {
   isUserLoaded: boolean;
+  isDoingCallback: boolean;
   userData: IUserData;
 }

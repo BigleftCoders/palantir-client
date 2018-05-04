@@ -3,8 +3,8 @@ import styled from 'types/styled-components';
 import {
   withScriptjs,
   withGoogleMap,
-  GoogleMap,
-  Marker
+  GoogleMap
+  // Marker
 } from 'react-google-maps';
 
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';

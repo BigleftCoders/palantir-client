@@ -1,4 +1,4 @@
-import { SET_USER_DATA, LOGOUT } from './constants';
+import { START_DOING_CALLBACK, SET_USER_DATA, LOGOUT } from './constants';
 import Auth from 'api/auth';
 
 // types
@@ -8,6 +8,7 @@ import { Dispatch } from 'redux';
 
 export const doGoogleAuthCallback = (code: string) => {
   return async (dispatch: Dispatch<any>) => {
+    dispatch({ type: START_DOING_CALLBACK });
     try {
       const {
         data
