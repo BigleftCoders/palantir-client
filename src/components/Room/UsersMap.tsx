@@ -8,6 +8,10 @@ import {
 } from 'react-google-maps';
 
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
+import { connect } from 'react-redux';
+import { IGlobalStore } from 'store/types';
+import { IUserData } from 'store/Auth/types';
+
 // components
 import LoadingSpinner from 'components/common/LoadingSpinner';
 import SvgMarker from 'components/Room/SvgMarker';
@@ -17,10 +21,12 @@ interface IState {
     lat: number;
     lng: number;
   } | null;
+  markers: IMarker[];
 }
 
 interface IProps {
   socketInstance: SocketIOClient.Socket;
+  userData: IUserData;
 }
 
 interface IPosition {
@@ -31,17 +37,32 @@ interface IPosition {
   };
   timestamp: number;
 }
-
+interface ICoords {
+  latitude: number;
+  longitude: number;
+}
+interface IMarker extends ICoords {
+  color: string;
+  userId: string;
+  displayName: string;
+}
 interface IPositionError {
   code: number;
   message: string;
 }
 
 class UsersMap extends React.Component<IProps, IState> {
-  state = {
+  state: IState = {
     geolocation: null,
-    markers: {},
-    socket: null
+    markers: [
+      {
+        color: '#21fс20',
+        latitude: 46.532236999999995,
+        longitude: 34.998807899999996,
+        userId: '5sdsaaeb443f832d18268a905030',
+        displayName: 'TEST'
+      }
+    ]
   };
 
   ownerGeowatchId: number = 0;
@@ -49,18 +70,33 @@ class UsersMap extends React.Component<IProps, IState> {
   gmap = React.createRef();
 
   subscribeOnMapUpdates = (socket: SocketIOClient.Socket) => {
-    socket.on('updateCoordinates', (data: any) => {
-      console.log(data);
-      navigator.geolocation.getCurrentPosition(
-        (pos: IPosition) => {
-          debugger;
-        },
-        (err: IPositionError) => {
-          console.log(err);
-        }
+    socket.on('updateCoordinates', (data: IMarker) => {
+      console.log(data, this.state);
+      const markerIndex: number = this.state.markers.findIndex(
+        (marker: IMarker) => data.userId === marker.userId
       );
-      // this.handleOwnerPositionChange(this.state.geolocation);
-      // const oldMarkers = { ...this.state.markers };
+      console.log('index', markerIndex);
+      if (markerIndex > 0) {
+        const newMarkers: IMarker[] = this.state.markers.map(
+          (marker: IMarker) => {
+            return { ...marker };
+          }
+        );
+
+        newMarkers[markerIndex] = data;
+        this.setState({
+          markers: newMarkers
+        });
+      } else {
+        const oldMarkers: IMarker[] = this.state.markers.map(
+          (marker: IMarker) => {
+            return { ...marker };
+          }
+        );
+
+        const newMarkers: IMarker[] = [...oldMarkers, data];
+        this.setState({ markers: newMarkers });
+      }
     });
   };
 
@@ -70,6 +106,7 @@ class UsersMap extends React.Component<IProps, IState> {
       timeout: 10000,
       maximumAge: 0
     };
+    this.subscribeOnMapUpdates(this.props.socketInstance);
 
     this.ownerGeowatchId = navigator.geolocation.watchPosition(
       this.handleOwnerPositionChange,
@@ -80,13 +117,6 @@ class UsersMap extends React.Component<IProps, IState> {
       console.log(this.gmap);
     }, 3000);
   }
-  componentWillReceiveProps(nextProps: IProps) {
-    debugger;
-    if (nextProps.socketInstance !== this.props.socketInstance) {
-      console.log('has connection');
-      this.subscribeOnMapUpdates(nextProps.socketInstance);
-    }
-  }
 
   componentWillUnmount() {
     navigator.geolocation.clearWatch(this.ownerGeowatchId);
@@ -96,10 +126,13 @@ class UsersMap extends React.Component<IProps, IState> {
     const { latitude, longitude } = pos.coords;
     const socket = this.props.socketInstance;
     this.setState({ geolocation: { lat: latitude, lng: longitude } });
-    if (socket) {
-      // console.log('emmited');
-      this.props.socketInstance.emit('newCoordinates', pos);
-    }
+    this.props.socketInstance.emit('newCoordinates', {
+      latitude,
+      longitude,
+      color: this.props.userData.color,
+      userId: this.props.userData.userId,
+      displayName: this.props.userData.displayName
+    });
   };
 
   handleOwnerPositionError = (err: IPositionError) => {
@@ -121,20 +154,22 @@ class UsersMap extends React.Component<IProps, IState> {
     return (
       <div>
         <GoogleMap defaultZoom={12} defaultCenter={geolocation}>
-          <STMarker>
-            {/* <Marker
+          {this.state.markers.map((marker: IMarker) => (
+            <STMarker key={marker.userId}>
+              {/* <Marker
               position={geolocation}
               markerWithLabel={MarkerWithLabel}
               options={{ labelClass: 'custom-pin' }}
             />{' '} */}
-            <MarkerWithLabel
-              position={geolocation}
-              labelAnchor={{ x: 21, y: 55 }}
-              options={{ labelClass: 'custom-pin' }}
-            >
-              <SvgMarker color="#13E7C9" name="AD" />
-            </MarkerWithLabel>
-          </STMarker>
+              <MarkerWithLabel
+                position={{ lat: marker.latitude, lng: marker.longitude }}
+                labelAnchor={{ x: 21, y: 55 }}
+                options={{ labelClass: 'custom-pin' }}
+              >
+                <SvgMarker color={marker.color} name={marker.displayName} />
+              </MarkerWithLabel>
+            </STMarker>
+          ))}
         </GoogleMap>
       </div>
     );
@@ -177,5 +212,9 @@ const STMarker = styled.div`
     display: none;
   }
 `;
-
-export default withScriptjs(withGoogleMap(UsersMap));
+const getPropsFromState = (state: IGlobalStore) => ({
+  userData: state.auth.userData
+});
+export default withScriptjs(
+  withGoogleMap(connect<any, any, any>(getPropsFromState)(UsersMap))
+);

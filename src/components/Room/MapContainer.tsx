@@ -4,11 +4,14 @@ import { Spin } from 'antd';
 
 // components
 import UsersMap from './UsersMap';
-
 // constants
 import { GOOGLE_MAPS_LINK } from 'config/constants';
 
-const MapContainer: React.SFC<any> = props => (
+interface IProps {
+  socketInstance: SocketIOClient.Socket;
+}
+
+const MapContainer: React.StatelessComponent<IProps> = (props: IProps) => (
   <UsersMap
     socketInstance={props.socketInstance}
     googleMapURL={GOOGLE_MAPS_LINK}

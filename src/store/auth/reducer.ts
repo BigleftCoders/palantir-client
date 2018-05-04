@@ -6,7 +6,8 @@ const initialState: IAuthState = {
   userData: {
     displayName: '',
     googleId: '',
-    userId: ''
+    userId: '',
+    color: ''
   }
 };
 
