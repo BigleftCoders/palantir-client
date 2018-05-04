@@ -9,7 +9,6 @@ import roomsApi from 'api/rooms';
 // components
 import { STActionButton } from 'components/common/styled';
 import LoadingSpinner from 'components/common/LoadingSpinner';
-import { setTimeout } from 'timers';
 
 interface IProps {
   roomId: number;

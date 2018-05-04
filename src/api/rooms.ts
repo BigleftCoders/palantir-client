@@ -23,7 +23,11 @@ const Rooms = {
   },
 
   verifyInvite(inviteKey: string) {
-    return axios.get(`/invite/verify${inviteKey}`);
+    return axios.get('/invite/verify', {
+      params: {
+        inviteKey
+      }
+    });
   }
 };
 

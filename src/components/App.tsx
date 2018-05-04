@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { AxiosResponse } from 'axios';
+import queryString from 'query-string';
 
 // api
 import roomsApi from 'api/rooms';
@@ -10,70 +11,86 @@ import roomsApi from 'api/rooms';
 import Routes from './routes';
 
 // store
-import { getProfile } from 'store/Auth/actions';
+import { getProfile, doGoogleAuthCallback } from 'store/Auth/actions';
 
 // types
 import { IUserData } from 'store/Auth/types';
-import { IGlobalStore } from 'store/types';
+import { IInviteResponse } from 'store/Rooms/types';
 
 // styles
 import 'styles/main.css';
 
 interface IProps extends RouteComponentProps<any> {
-  isUserLoaded: boolean;
   getProfile: () => Promise<IUserData>;
+  doGoogleAuthCallback: (code: string) => Promise<IUserData>;
 }
 
 class App extends React.Component<IProps> {
   async componentDidMount() {
-    const { getProfile, history } = this.props;
+    const { doGoogleAuthCallback, getProfile, history } = this.props;
     const { pathname } = history.location;
-
+    const { code, inviteKey: urlInviteKey } = this.parseQueryParams();
     console.log(localStorage.getItem('inviteKey'));
+
+    if (code) {
+      try {
+        await doGoogleAuthCallback(code);
+        const inviteKey = localStorage.getItem('inviteKey');
+
+        if (inviteKey) {
+          this.doInviteVerify(inviteKey);
+          return;
+        }
+
+        history.push('/');
+      } catch (error) {
+        history.push('/login');
+      }
+    }
 
     try {
       const profile = await getProfile();
+      const inviteKey = localStorage.getItem('inviteKey') || urlInviteKey;
+
+      if (inviteKey) {
+        this.doInviteVerify(inviteKey);
+        return;
+      }
 
       if (profile && pathname === '/login') {
         history.push('/');
       }
     } catch (error) {
+      const { inviteKey } = this.parseQueryParams();
+
+      if (inviteKey) {
+        localStorage.setItem('inviteKey', inviteKey);
+      }
+
       history.push('/login');
     }
   }
 
-  checkStorageForInvite = async () => {
-    const inviteKey = localStorage.getItem('inviteKey');
-    if (inviteKey) {
-      const response: AxiosResponse<any> = await roomsApi.verifyInvite(
-        inviteKey
-      );
-    }
-  };
-
-  parseQueryParams = async () => {
-    const { isUserLoaded, location } = this.props;
+  parseQueryParams = () => {
+    const { location } = this.props;
     const { search } = location;
 
     if (search) {
-      const searchParams: any = {};
-      const query: any = new URLSearchParams(search);
-
-      for (let param of query.entries()) {
-        searchParams[param[0]] = param[1];
-      }
-
-      if (searchParams.invite) {
-        if (!isUserLoaded) {
-          localStorage.setItem('inviteKey', searchParams.invite);
-          return;
-        }
-
-        const response: AxiosResponse<any> = await roomsApi.verifyInvite(
-          searchParams.invite
-        );
-      }
+      return queryString.parse(search);
     }
+
+    return {};
+  };
+
+  doInviteVerify = async (inviteKey: string) => {
+    const { history } = this.props;
+    const response: AxiosResponse<
+      IInviteResponse
+    > = await roomsApi.verifyInvite(inviteKey);
+
+    localStorage.removeItem('inviteKey');
+    const { roomId } = response.data;
+    history.push(`/room/${roomId}`);
   };
 
   render() {
@@ -81,8 +98,6 @@ class App extends React.Component<IProps> {
   }
 }
 
-const mapStateToProps = ({ auth }: IGlobalStore) => ({
-  isUserLoaded: auth.isUserLoaded
-});
-
-export default withRouter(connect<any, any, any>(null, { getProfile })(App));
+export default withRouter(
+  connect<any, any, any>(null, { getProfile, doGoogleAuthCallback })(App)
+);

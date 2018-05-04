@@ -3,8 +3,8 @@ import styled from 'types/styled-components';
 import {
   withScriptjs,
   withGoogleMap,
-  GoogleMap,
-  Marker
+  GoogleMap
+  // Marker
 } from 'react-google-maps';
 
 import MarkerWithLabel from 'react-google-maps/lib/components/addons/MarkerWithLabel';
@@ -53,7 +53,7 @@ class UsersMap extends React.Component<IProps, IState> {
       console.log(data);
       navigator.geolocation.getCurrentPosition(
         (pos: IPosition) => {
-          debugger;
+          // debugger;
         },
         (err: IPositionError) => {
           console.log(err);
@@ -81,7 +81,7 @@ class UsersMap extends React.Component<IProps, IState> {
     }, 3000);
   }
   componentWillReceiveProps(nextProps: IProps) {
-    debugger;
+    // debugger;
     if (nextProps.socketInstance !== this.props.socketInstance) {
       console.log('has connection');
       this.subscribeOnMapUpdates(nextProps.socketInstance);

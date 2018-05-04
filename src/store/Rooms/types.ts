@@ -30,6 +30,10 @@ export interface IUserItem {
   _id: string;
 }
 
+export interface IInviteResponse {
+  roomId: number;
+}
+
 // interface ICreatedBy {
 //   userId: number;
 // }
