@@ -36,6 +36,7 @@ class Chat extends React.Component<IProps, IState> {
     this.subscribeToChatSocket();
     this.messagesBox.scrollTop = this.messagesBox.scrollHeight;
   }
+
   componentWillReceiveProps(nextProps: IProps) {
     console.log('cwrp', this.props.socket, nextProps.socket);
   }
@@ -60,6 +61,7 @@ class Chat extends React.Component<IProps, IState> {
           userId
         });
       });
+
       socket.on('error', (data: never) => {
         console.error('error', data);
       });

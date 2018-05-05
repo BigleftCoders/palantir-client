@@ -34,7 +34,6 @@ interface IProps extends RouteComponentProps<any> {
 
 interface IState {
   isLoadingRoomData: boolean;
-  // socket: SocketIOClient.Socket | null;
 }
 
 class Room extends React.Component<IProps, IState> {
@@ -42,9 +41,12 @@ class Room extends React.Component<IProps, IState> {
     isLoadingRoomData: true
   };
 
-  socket: SocketIOClient.Socket = io('http://localhost:1337/chat', {
-    forceNew: true
-  });
+  socket: SocketIOClient.Socket = io(
+    process.env.REACT_APP_CHAT_SOCKET_URL || '',
+    {
+      forceNew: true
+    }
+  );
 
   componentDidMount() {
     this.getRoomData();

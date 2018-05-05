@@ -70,32 +70,40 @@ class UsersMap extends React.Component<IProps, IState> {
   gmap = React.createRef();
 
   subscribeOnMapUpdates = (socket: SocketIOClient.Socket) => {
+    const { markers } = this.state;
     socket.on('updateCoordinates', (data: IMarker) => {
       console.log(data, this.state);
-      const markerIndex: number = this.state.markers.findIndex(
+      const markerIndex: number = markers.findIndex(
         (marker: IMarker) => data.userId === marker.userId
       );
       console.log('index', markerIndex);
+
       if (markerIndex > 0) {
-        const newMarkers: IMarker[] = this.state.markers.map(
-          (marker: IMarker) => {
-            return { ...marker };
-          }
-        );
+        this.setState(({ markers: oldMarkers }) => ({
+          markers: oldMarkers.map((marker, index) => {
+            if (index === markerIndex) {
+              return data;
+            }
+            return marker;
+          })
+        }));
+        // const newMarkers: IMarker[] = markers.map((marker: IMarker) => {
+        //   return { ...marker };
+        // });
 
-        newMarkers[markerIndex] = data;
-        this.setState({
-          markers: newMarkers
-        });
+        // newMarkers[markerIndex] = data;
+        // this.setState({
+        //   markers: newMarkers
+        // });
       } else {
-        const oldMarkers: IMarker[] = this.state.markers.map(
-          (marker: IMarker) => {
-            return { ...marker };
-          }
-        );
+        // const oldMarkers: IMarker[] = markers.map((marker: IMarker) => {
+        //   return { ...marker };
+        // });
 
-        const newMarkers: IMarker[] = [...oldMarkers, data];
-        this.setState({ markers: newMarkers });
+        // const newMarkers: IMarker[] = [...oldMarkers, data];
+        this.setState(({ markers: oldMarkers }) => ({
+          markers: oldMarkers.concat(data)
+        }));
       }
     });
   };
@@ -113,6 +121,7 @@ class UsersMap extends React.Component<IProps, IState> {
       this.handleOwnerPositionError,
       options
     );
+
     setTimeout(() => {
       console.log(this.gmap);
     }, 3000);
@@ -123,14 +132,16 @@ class UsersMap extends React.Component<IProps, IState> {
   }
 
   handleOwnerPositionChange = (pos: IPosition) => {
+    const { socketInstance, userData } = this.props;
     const { latitude, longitude } = pos.coords;
     this.setState({ geolocation: { lat: latitude, lng: longitude } });
-    this.props.socketInstance.emit('newCoordinates', {
+
+    socketInstance.emit('newCoordinates', {
       latitude,
       longitude,
-      color: this.props.userData.color,
-      userId: this.props.userData.userId,
-      displayName: this.props.userData.displayName
+      color: userData.color,
+      userId: userData.userId,
+      displayName: userData.displayName
     });
   };
 
@@ -145,7 +156,7 @@ class UsersMap extends React.Component<IProps, IState> {
       .join('');
 
   render() {
-    const { geolocation } = this.state;
+    const { geolocation, markers } = this.state;
     const isLoadingGeo = !geolocation;
 
     if (isLoadingGeo) {
@@ -159,7 +170,7 @@ class UsersMap extends React.Component<IProps, IState> {
     return (
       <div>
         <GoogleMap defaultZoom={12} defaultCenter={geolocation}>
-          {this.state.markers.map(
+          {markers.map(
             ({ userId, latitude, longitude, color, displayName }: IMarker) => {
               const cuttedName = this.formatName(displayName);
 

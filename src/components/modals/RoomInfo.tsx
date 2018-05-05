@@ -62,9 +62,11 @@ class RoomInfo extends React.Component<IProps, IState> {
                 <STBoldText>Members:</STBoldText>
               </STMembersHeader>
               {users.map(({ displayName, color, _id }) => (
-                <STUserNameTitle key={_id} userColor={color}>
-                  {displayName}
-                </STUserNameTitle>
+                <p key={_id}>
+                  <STUserNameTitle userColor={color}>
+                    {displayName}
+                  </STUserNameTitle>
+                </p>
               ))}
             </div>
           </STMembersBox>
