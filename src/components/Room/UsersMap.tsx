@@ -70,9 +70,9 @@ class UsersMap extends React.Component<IProps, IState> {
   gmap = React.createRef();
 
   subscribeOnMapUpdates = (socket: SocketIOClient.Socket) => {
-    const { markers } = this.state;
     socket.on('updateCoordinates', (data: IMarker) => {
       console.log(data, this.state);
+      const { markers } = this.state;
       const markerIndex: number = markers.findIndex(
         (marker: IMarker) => data.userId === marker.userId
       );
