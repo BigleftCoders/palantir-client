@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import auth from './auth/reducer';
-import rooms from './rooms/reducer';
+import auth from 'store/Auth/reducer';
+import rooms from 'store/Rooms/reducer';
 
 export default combineReducers({
   auth,
