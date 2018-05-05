@@ -54,15 +54,7 @@ interface IPositionError {
 class UsersMap extends React.Component<IProps, IState> {
   state: IState = {
     geolocation: null,
-    markers: [
-      {
-        color: '#21fс20',
-        latitude: 46.532236999999995,
-        longitude: 34.998807899999996,
-        userId: '5sdsaaeb443f832d18268a905030',
-        displayName: 'TEST'
-      }
-    ]
+    markers: []
   };
 
   ownerGeowatchId: number = 0;
@@ -78,7 +70,7 @@ class UsersMap extends React.Component<IProps, IState> {
       );
       console.log('index', markerIndex);
 
-      if (markerIndex > 0) {
+      if (markerIndex > -1) {
         this.setState(({ markers: oldMarkers }) => ({
           markers: oldMarkers.map((marker, index) => {
             if (index === markerIndex) {
@@ -87,20 +79,7 @@ class UsersMap extends React.Component<IProps, IState> {
             return marker;
           })
         }));
-        // const newMarkers: IMarker[] = markers.map((marker: IMarker) => {
-        //   return { ...marker };
-        // });
-
-        // newMarkers[markerIndex] = data;
-        // this.setState({
-        //   markers: newMarkers
-        // });
       } else {
-        // const oldMarkers: IMarker[] = markers.map((marker: IMarker) => {
-        //   return { ...marker };
-        // });
-
-        // const newMarkers: IMarker[] = [...oldMarkers, data];
         this.setState(({ markers: oldMarkers }) => ({
           markers: oldMarkers.concat(data)
         }));
