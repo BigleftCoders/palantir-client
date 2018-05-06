@@ -8,7 +8,7 @@ import UsersMap from './UsersMap';
 import { GOOGLE_MAPS_LINK } from 'config/constants';
 
 interface IProps {
-  socketInstance: SocketIOClient.Socket;
+  socketInstance: SocketIOClient.Socket | null;
 }
 
 const MapContainer: React.StatelessComponent<IProps> = (props: IProps) => (

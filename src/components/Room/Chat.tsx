@@ -12,7 +12,7 @@ import { IMessage } from 'store/Rooms/types';
 interface IProps {
   roomId: number;
   userId: string;
-  socket: SocketIOClient.Socket;
+  socket: SocketIOClient.Socket | null;
   foundedMessages: IMessage[];
 }
 
@@ -33,12 +33,17 @@ class Chat extends React.Component<IProps, IState> {
 
   componentDidMount() {
     console.log('cdm', this.props.socket);
-    this.subscribeToChatSocket();
+    if (this.props.socket) {
+      this.subscribeToChatSocket(this.props.socket);
+    }
     this.messagesBox.scrollTop = this.messagesBox.scrollHeight;
   }
 
   componentWillReceiveProps(nextProps: IProps) {
-    console.log('cwrp', this.props.socket, nextProps.socket);
+    if (nextProps.socket) {
+      this.subscribeToChatSocket(nextProps.socket);
+      console.log('socket in Chat connected async');
+    }
   }
 
   componentWillUnmount() {
@@ -49,18 +54,19 @@ class Chat extends React.Component<IProps, IState> {
     }
   }
 
-  subscribeToChatSocket = () => {
+  subscribeToChatSocket = (socket: SocketIOClient.Socket) => {
     try {
-      const { socket } = this.props;
-      console.log('subscribe', socket);
-      socket.on('connect', (): void => {
-        const { roomId, userId } = this.props;
-        console.log('joinRoom', roomId, userId);
-        socket.emit('joinRoom', {
-          roomId,
-          userId
-        });
+      console.log('subscribe chat', socket.io.readyState);
+      // debugger;
+      // socket.on('connect', (): void => {
+      // debugger;
+      const { roomId, userId } = this.props;
+      console.log('joinRoom', roomId, userId);
+      socket.emit('joinRoom', {
+        roomId,
+        userId
       });
+      // });
 
       socket.on('error', (data: never) => {
         console.error('error', data);

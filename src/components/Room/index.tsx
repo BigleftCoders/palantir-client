@@ -34,22 +34,26 @@ interface IProps extends RouteComponentProps<any> {
 
 interface IState {
   isLoadingRoomData: boolean;
+  socket: SocketIOClient.Socket | null;
 }
 
 class Room extends React.Component<IProps, IState> {
   state = {
-    isLoadingRoomData: true
+    isLoadingRoomData: true,
+    socket: null
   };
-
-  socket: SocketIOClient.Socket = io(
-    process.env.REACT_APP_CHAT_SOCKET_URL || '',
-    {
-      forceNew: true
-    }
-  );
 
   componentDidMount() {
     this.getRoomData();
+    const socket: SocketIOClient.Socket = io(
+      process.env.REACT_APP_CHAT_SOCKET_URL || '',
+      {
+        forceNew: true
+      }
+    );
+    setTimeout(() => {
+      this.setState({ socket });
+    }, 2000);
   }
 
   getRoomData = async () => {
@@ -57,7 +61,6 @@ class Room extends React.Component<IProps, IState> {
       const { getRoomData, match } = this.props;
       const { id } = match.params;
       await getRoomData(id);
-      console.log(this.props.roomData);
       this.setState({ isLoadingRoomData: false });
     } catch (error) {
       throw error;
@@ -86,14 +89,14 @@ class Room extends React.Component<IProps, IState> {
           <STCollapserWrapp>
             <Collapse bordered={false} defaultActiveKey={['1']}>
               <Collapse.Panel header="Map" key="1">
-                <MapContainer socketInstance={this.socket} />
+                <MapContainer socketInstance={this.state.socket} />
               </Collapse.Panel>
             </Collapse>
           </STCollapserWrapp>
 
           <Chat
             roomId={roomId}
-            socket={this.socket}
+            socket={this.state.socket}
             userId={userId}
             foundedMessages={foundedMessages}
           />

@@ -22,7 +22,7 @@ interface IState {
 }
 
 interface IProps {
-  socketInstance: SocketIOClient.Socket;
+  socketInstance: SocketIOClient.Socket | null;
   userData: IUserData;
 }
 
@@ -62,13 +62,23 @@ class UsersMap extends React.Component<IProps, IState> {
   gmap = React.createRef();
 
   subscribeOnMapUpdates = (socket: SocketIOClient.Socket) => {
+    const options = {
+      enableHighAccuracy: false,
+      timeout: 10000,
+      maximumAge: 0
+    };
+    this.ownerGeowatchId = navigator.geolocation.watchPosition(
+      this.handleOwnerPositionChange,
+      this.handleOwnerPositionError,
+      options
+    );
+    console.log('subscripte map', socket.io.readyState);
     socket.on('updateCoordinates', (data: IMarker) => {
       console.log(data, this.state);
       const { markers } = this.state;
       const markerIndex: number = markers.findIndex(
         (marker: IMarker) => data.userId === marker.userId
       );
-      console.log('index', markerIndex);
 
       if (markerIndex > -1) {
         this.setState(({ markers: oldMarkers }) => ({
@@ -87,23 +97,16 @@ class UsersMap extends React.Component<IProps, IState> {
     });
   };
 
+  componentWillReceiveProps(nextProps: IProps) {
+    if (nextProps.socketInstance) {
+      this.subscribeOnMapUpdates(nextProps.socketInstance);
+      console.log('socket in UsersMap connected async');
+    }
+  }
   componentDidMount() {
-    const options = {
-      enableHighAccuracy: false,
-      timeout: 10000,
-      maximumAge: 0
-    };
-    this.subscribeOnMapUpdates(this.props.socketInstance);
-
-    this.ownerGeowatchId = navigator.geolocation.watchPosition(
-      this.handleOwnerPositionChange,
-      this.handleOwnerPositionError,
-      options
-    );
-
-    setTimeout(() => {
-      console.log(this.gmap);
-    }, 3000);
+    if (this.props.socketInstance) {
+      this.subscribeOnMapUpdates(this.props.socketInstance);
+    }
   }
 
   componentWillUnmount() {
@@ -114,14 +117,17 @@ class UsersMap extends React.Component<IProps, IState> {
     const { socketInstance, userData } = this.props;
     const { latitude, longitude } = pos.coords;
     this.setState({ geolocation: { lat: latitude, lng: longitude } });
-
-    socketInstance.emit('newCoordinates', {
-      latitude,
-      longitude,
-      color: userData.color,
-      userId: userData.userId,
-      displayName: userData.displayName
-    });
+    if (socketInstance) {
+      socketInstance.emit('newCoordinates', {
+        latitude,
+        longitude,
+        color: userData.color,
+        userId: userData.userId,
+        displayName: userData.displayName
+      });
+    } else {
+      console.error('SOCKET IS NOT CONNECTED');
+    }
   };
 
   handleOwnerPositionError = (err: IPositionError) => {
