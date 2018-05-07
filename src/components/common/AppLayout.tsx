@@ -9,6 +9,9 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 // types
 import { IGlobalStore } from 'store/types';
 
+// utils
+import { media } from 'components/common/styled';
+
 interface IProps {
   isUserLoaded: boolean;
   children?: any;
@@ -39,6 +42,10 @@ const STAppWrapper = styled.div`
   width: 1000px;
   min-height: 100%;
   margin: 0 auto;
+
+  ${media.mobile`
+    width: 100%;
+  `};
 `;
 
 const STCenterer = styled.div`

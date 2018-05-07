@@ -11,7 +11,8 @@ import CreateRoom from 'components/modals/CreateRoom';
 import {
   STRoomsActions,
   STRoomsActionsWrap,
-  STActionButton
+  STActionButton,
+  media
 } from 'components/common/styled';
 
 // store
@@ -56,8 +57,7 @@ class HomeScreen extends React.Component<IProps, IState> {
           <STListDescrip>Joined rooms</STListDescrip>
           <STRoomsActionsWrap>
             <CreateRoom />
-            <STActionButton type="primary" ghost icon="link" />
-            <STActionButton type="primary" ghost icon="scan" />
+            <STActionButton type="primary" ghost icon="scan" disabled />
           </STRoomsActionsWrap>
         </STRoomsActions>
         <LoadingSpinner isLoading={isFetchingRooms} alignOnCenter>
@@ -99,6 +99,11 @@ class HomeScreen extends React.Component<IProps, IState> {
 const STListWrap = styled.div`
   height: calc(100vh - 130px);
   overflow-y: auto;
+
+  ${media.mobile`
+    height: calc(100vh - 110px);
+    padding-left: 20px;
+  `};
 `;
 
 const STListDescrip = styled.h4`

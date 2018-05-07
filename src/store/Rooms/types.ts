@@ -36,7 +36,3 @@ export interface IUserItem {
 export interface IInviteResponse {
   roomId: number;
 }
-
-// interface ICreatedBy {
-//   userId: number;
-// }

@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 
 // components
 import ChatInput from './ChatInput';
-import { STUserNameTitle } from 'components/common/styled';
+import { STUserNameTitle, media } from 'components/common/styled';
 
 // types
 import { IMessage } from 'store/Rooms/types';
@@ -152,6 +152,10 @@ const STChatGroup = styled.div`
   flex-grow: 1;
   padding-bottom: 20px;
   overflow: hidden;
+
+  ${media.mobile`
+    padding: 0 5px 5px 5px;  
+  `};
 `;
 
 const STChatMessages = styled.div`
@@ -160,6 +164,10 @@ const STChatMessages = styled.div`
   margin-bottom: 20px;
   flex-grow: 1;
   overflow-y: auto;
+
+  ${media.mobile`
+    margin-bottom: 10px; 
+  `};
 `;
 
 const STChatMessageItem = styled.div`

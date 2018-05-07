@@ -10,8 +10,8 @@ import LoadingSpinner from 'components/common/LoadingSpinner';
 import RoomInfo from 'components/modals/RoomInfo';
 import {
   STRoomsActions,
-  STRoomsActionsWrap
-  /* STActionButton */
+  STRoomsActionsWrap,
+  media
 } from 'components/common/styled';
 import ShareRoom from 'components/modals/ShareRoom';
 import MapContainer from './MapContainer';
@@ -88,7 +88,7 @@ class Room extends React.Component<IProps, IState> {
         <STFlexer>
           <STCollapserWrapp>
             <Collapse bordered={false} defaultActiveKey={['1']}>
-              <Collapse.Panel header="Map" key="1">
+              <Collapse.Panel header={<span>Map</span>} key="1">
                 <MapContainer socketInstance={this.state.socket} />
               </Collapse.Panel>
             </Collapse>
@@ -111,6 +111,10 @@ const STTitleWrapp = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+
+  ${media.mobile`
+    padding-left: 20px;
+  `};
 `;
 
 const STRoomTitle = styled.h2`
@@ -128,15 +132,37 @@ const STFlexer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   height: calc(100vh - 115px);
+
+  ${media.mobile`
+    height: calc(100vh - 95px);
+  `};
 `;
 
 const STCollapserWrapp = styled.div`
   margin-bottom: 30px;
 
+  ${media.mobile`
+    margin-bottom: 10px;  
+  `};
+
   .ant-collapse-header {
     padding-left: 33px !important;
+
+    ${media.mobile`
+      padding: 0 !important;
+      display: flex !important;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    `};
+
     .arrow {
       left: 6px !important;
+
+      ${media.mobile`
+        position: static !important;
+        padding: 5px !important;
+      `};
     }
   }
   .ant-collapse-content {

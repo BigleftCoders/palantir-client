@@ -8,6 +8,9 @@ import { Icon, Menu, Dropdown } from 'antd';
 // store
 import { logout } from 'store/Auth/actions';
 
+// utils
+import { media } from 'components/common/styled';
+
 // types
 import { IUserData } from 'store/Auth/types';
 import { IGlobalStore } from 'store/types';
@@ -84,6 +87,10 @@ const STHeaderWrap = styled.div`
   padding: 0 20px;
   color: #fff;
   background-color: #4496d8;
+
+  ${media.mobile`
+    margin-bottom: 15px;  
+  `};
 `;
 
 const STLogo = styled.div`

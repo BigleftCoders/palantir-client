@@ -4,6 +4,10 @@ import { Spin } from 'antd';
 
 // components
 import UsersMap from './UsersMap';
+
+// utils
+import { media } from 'components/common/styled';
+
 // constants
 import { GOOGLE_MAPS_LINK } from 'config/constants';
 
@@ -38,6 +42,10 @@ const STMapSpinnerWrapp = styled.div`
 const STMapContainer = styled.div`
   position: relative;
   height: 400px;
+
+  ${media.mobile`
+    height: 280px;
+  `};
 `;
 
 export default MapContainer;
