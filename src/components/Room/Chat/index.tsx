@@ -3,11 +3,13 @@ import styled from 'types/styled-components';
 import { format } from 'date-fns';
 
 // components
-import ChatInput from './ChatInput';
+import ChatInput from './Input';
+import EmojiPicker from './EmojiPicker';
 import { STUserNameTitle, media } from 'components/common/styled';
 
 // types
 import { IMessage } from 'store/Rooms/types';
+import { EmojiData } from 'emoji-mart';
 
 interface IProps {
   roomId: number;
@@ -17,32 +19,37 @@ interface IProps {
 }
 
 interface IState {
+  caretPosition: number | null;
   serverError: string;
   messages: IMessage[];
+  inputValue: string;
 }
 
 class Chat extends React.Component<IProps, IState> {
   state = {
+    caretPosition: 0,
     serverError: '',
+    inputValue: '',
     messages: this.props.foundedMessages || []
   };
 
   messagesBox: HTMLDivElement | any = null;
 
-  inputRef: HTMLInputElement | any = React.createRef();
+  inputRef: any = React.createRef();
 
   componentDidMount() {
-    console.log('cdm', this.props.socket);
+    this.inputRef.current.focus();
+
     if (this.props.socket) {
       this.subscribeToChatSocket(this.props.socket);
     }
+
     this.messagesBox.scrollTop = this.messagesBox.scrollHeight;
   }
 
   componentWillReceiveProps(nextProps: IProps) {
     if (nextProps.socket) {
       this.subscribeToChatSocket(nextProps.socket);
-      console.log('socket in Chat connected async');
     }
   }
 
@@ -54,32 +61,57 @@ class Chat extends React.Component<IProps, IState> {
     }
   }
 
+  handleInputChange = (e: React.FormEvent<HTMLInputElement>): void => {
+    this.setState({
+      inputValue: e.currentTarget.value,
+      caretPosition: e.currentTarget.selectionStart,
+    });
+  }
+
+  handleInputBlur = (e: React.FormEvent<HTMLInputElement>): void => {
+    this.setState({caretPosition: e.currentTarget.selectionStart});
+  }
+
+  handleEmojiSelect = (emoji: EmojiData): void => {
+    if ('native' in emoji) {
+      this.setState(
+        prevState => ({
+          inputValue: [
+            this.state.inputValue.slice(0, this.state.caretPosition),
+            emoji.native,
+            this.state.inputValue.slice(this.state.caretPosition),
+          ].join(''),
+
+          caretPosition: prevState.caretPosition as number + 1,
+        }),
+
+        () => {
+          this.inputRef.current.input.focus();
+          this.inputRef.current.input.setSelectionRange(this.state.caretPosition + 1, this.state.caretPosition + 1);
+        },
+      );
+    }
+  }
+
   subscribeToChatSocket = (socket: SocketIOClient.Socket) => {
     try {
-      console.log('subscribe chat', socket.io.readyState);
-      // debugger;
-      // socket.on('connect', (): void => {
-      // debugger;
       const { roomId, userId } = this.props;
-      console.log('joinRoom', roomId, userId);
+
       socket.emit('joinRoom', {
         roomId,
         userId
       });
-      // });
 
       socket.on('error', (data: never) => {
         console.error('error', data);
       });
 
-      // window.onbeforeunload = () => socket.close();
       socket.on('message', (message: any): void => console.log(message));
 
       socket.on('serverError', (error: string): void =>
         this.setState({ serverError: error })
       );
 
-      // socket.on('joined', (data: any) => console.log('JOINED', data));
       socket.on('updateChat', (data: IMessage | any) => {
         console.log('updateChat event', data);
         if (data === 'SERVER') return;
@@ -102,14 +134,16 @@ class Chat extends React.Component<IProps, IState> {
     }
   };
 
-  sendMessage = (messageText: string) => {
+  sendMessage = () => {
     const { socket } = this.props;
-    const isMessageEmpty = messageText === '';
+    const isMessageEmpty = this.state.inputValue === '';
 
     if (socket && !isMessageEmpty) {
-      socket.emit('newMessage', messageText);
+      socket.emit('newMessage', this.state.inputValue);
     }
+
     this.inputRef.current.focus();
+    this.setState({ inputValue: '' })
   };
 
   render() {
@@ -139,7 +173,15 @@ class Chat extends React.Component<IProps, IState> {
           })}
         </STChatMessages>
 
-        <ChatInput onMessageSend={this.sendMessage} ref={this.inputRef} />
+        <ChatInput
+          handleInputBlur={this.handleInputBlur}
+          handleInputChange={this.handleInputChange}
+          inputValue={this.state.inputValue}
+          onMessageSend={this.sendMessage}
+          inputRef={this.inputRef}
+        />
+
+        <EmojiPicker handleEmojiSelect={this.handleEmojiSelect} />
       </STChatGroup>
     );
   }
@@ -154,7 +196,7 @@ const STChatGroup = styled.div`
   overflow: hidden;
 
   ${media.mobile`
-    padding: 0 5px 5px 5px;  
+    padding: 0 5px 5px 5px;
   `};
 `;
 
@@ -166,7 +208,7 @@ const STChatMessages = styled.div`
   overflow-y: auto;
 
   ${media.mobile`
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
   `};
 `;
 
