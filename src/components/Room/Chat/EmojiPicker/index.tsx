@@ -3,6 +3,8 @@ import styled from 'types/styled-components';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker, EmojiData } from 'emoji-mart';
 
+import OnClickOutside from 'components/common/OnClickOutside';
+
 interface IProps {
   handleEmojiSelect: (emoji: EmojiData) => void;
 }
@@ -16,23 +18,29 @@ class EmojiPicker extends React.Component<IProps, IState> {
     isPickerShown: false,
   }
 
-  togglePicker = () => this.setState(prevState => ({
-    isPickerShown: !prevState.isPickerShown,
-  }))
+  hidePicker = () => this.setState({
+    isPickerShown: false,
+  })
+
+  showPicker = () => this.setState({
+    isPickerShown: true,
+  })
 
   render() {
     return (
       <React.Fragment>
-        {this.state.isPickerShown && <STEmojiPicker>
-          <Picker
-            native
-            title=""
-            onSelect={this.props.handleEmojiSelect}
-            custom={[]}
-          />
-        </STEmojiPicker>}
+        {this.state.isPickerShown && <OnClickOutside onClickOutside={this.hidePicker}>
+          <STEmojiPicker>
+            <Picker
+              native
+              title=""
+              onSelect={this.props.handleEmojiSelect}
+              custom={[]}
+            />
+          </STEmojiPicker>
+        </OnClickOutside>}
 
-        <STEmojiToggle onClick={this.togglePicker}>
+        <STEmojiToggle onClick={this.showPicker}>
           😊
         </STEmojiToggle>
       </React.Fragment>
