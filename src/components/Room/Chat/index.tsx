@@ -35,7 +35,7 @@ class Chat extends React.Component<IProps, IState> {
 
   messagesBox: HTMLDivElement | any = null;
 
-  inputRef: any = React.createRef();
+  inputRef: HTMLInputElement | any = React.createRef();
 
   componentDidMount() {
     this.inputRef.current.focus();
